@@ -1,0 +1,110 @@
+﻿<Page x:Class="GUI.InventarioPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Gestión de Inventario">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Barra de herramientas -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+            <Button x:Name="btnAgregarPrenda" Content="Agregar Prenda" Margin="0,0,10,0" Click="btnAgregarPrenda_Click"/>
+            <Button x:Name="btnAgregarStock" Content="Agregar Stock" Margin="0,0,10,0" Click="btnAgregarStock_Click"/>
+            <Button x:Name="btnActualizarInventario" Content="Actualizar" Margin="0,0,10,0" Click="btnActualizarInventario_Click"/>
+        </StackPanel>
+
+        <!-- Tabla de inventario -->
+        <TabControl Grid.Row="1">
+            <TabItem Header="Prendas">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Filtros -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,10">
+                        <TextBlock Text="Filtrar por categoría:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="cmbCategoria" Width="150" Margin="0,0,20,0" SelectionChanged="cmbCategoria_SelectionChanged"/>
+
+                        <TextBlock Text="Buscar:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBox x:Name="txtBuscarPrenda" Width="200" Margin="0,0,10,0"/>
+                        <Button Content="Buscar" Click="btnBuscarPrenda_Click"/>
+                    </StackPanel>
+
+                    <!-- DataGrid de prendas -->
+                    <DataGrid x:Name="dgPrendas" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
+                              SelectionMode="Single" SelectionChanged="dgPrendas_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Código" Binding="{Binding Codigo}" Width="100"/>
+                            <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="200"/>
+                            <DataGridTextColumn Header="Categoría" Binding="{Binding Categoria.Nombre}" Width="150"/>
+                            <DataGridTextColumn Header="Precio" Binding="{Binding PrecioVenta, StringFormat=C}" Width="100"/>
+                            <DataGridTextColumn Header="Costo" Binding="{Binding Costo, StringFormat=C}" Width="100"/>
+                            <DataGridTemplateColumn Header="Acciones" Width="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="Editar" Margin="0,0,5,0" Click="btnEditarPrenda_Click" Tag="{Binding Id}"/>
+                                            <Button Content="Eliminar" Click="btnEliminarPrenda_Click" Tag="{Binding Id}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Inventario">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Filtros -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,10">
+                        <TextBlock Text="Filtrar por prenda:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="cmbPrenda" Width="200" Margin="0,0,20,0" SelectionChanged="cmbPrenda_SelectionChanged"/>
+
+                        <TextBlock Text="Filtrar por talla:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="cmbTalla" Width="100" Margin="0,0,20,0" SelectionChanged="cmbTalla_SelectionChanged">
+                            <ComboBoxItem Content="Todas"/>
+                            <ComboBoxItem Content="XS"/>
+                            <ComboBoxItem Content="S"/>
+                            <ComboBoxItem Content="M"/>
+                            <ComboBoxItem Content="L"/>
+                            <ComboBoxItem Content="XL"/>
+                            <ComboBoxItem Content="XXL"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- DataGrid de inventario -->
+                    <DataGrid x:Name="dgInventario" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Prenda" Binding="{Binding Prenda.Nombre}" Width="200"/>
+                            <DataGridTextColumn Header="Talla" Binding="{Binding Talla}" Width="80"/>
+                            <DataGridTextColumn Header="Color" Binding="{Binding Color}" Width="100"/>
+                            <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="80"/>
+                            <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="150"/>
+                            <DataGridTemplateColumn Header="Acciones" Width="200">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="Editar" Margin="0,0,5,0" Click="btnEditarInventario_Click" Tag="{Binding Id}"/>
+                                            <Button Content="Eliminar" Margin="0,0,5,0" Click="btnEliminarInventario_Click" Tag="{Binding Id}"/>
+                                            <Button Content="Ajustar Stock" Click="btnAjustarStock_Click" Tag="{Binding Id}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

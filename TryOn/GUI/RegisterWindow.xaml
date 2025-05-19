@@ -1,0 +1,71 @@
+﻿<Window x:Class="GUI.RegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TryOn - Registro de Usuario" Height="550" Width="450"
+        WindowStartupLocation="CenterScreen" 
+        Background="{StaticResource BackgroundBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Encabezado -->
+        <StackPanel Grid.Row="0" Margin="0,20,0,10">
+            <TextBlock Text="TryOn" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{StaticResource PrimaryBrush}"/>
+            <TextBlock Text="Registro de Usuario" FontSize="16" HorizontalAlignment="Center" Margin="0,5,0,0" Foreground="{StaticResource TextBrush}"/>
+        </StackPanel>
+
+        <!-- Formulario de registro -->
+        <Border Grid.Row="1" Background="White" CornerRadius="8" Margin="30,0" Padding="20">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Información Personal" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,15"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                            <TextBlock Text="Nombre" Margin="0,0,0,5"/>
+                            <TextBox x:Name="txtNombre" Margin="0,0,0,10"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                            <TextBlock Text="Apellido" Margin="0,0,0,5"/>
+                            <TextBox x:Name="txtApellido" Margin="0,0,0,10"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="Email" Margin="0,0,0,5"/>
+                    <TextBox x:Name="txtEmail" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Teléfono" Margin="0,0,0,5"/>
+                    <TextBox x:Name="txtTelefono" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Dirección" Margin="0,0,0,5"/>
+                    <TextBox x:Name="txtDireccion" Margin="0,0,0,10" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+
+                    <TextBlock Text="Contraseña" Margin="0,0,0,5"/>
+                    <PasswordBox x:Name="txtPassword" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Confirmar Contraseña" Margin="0,0,0,5"/>
+                    <PasswordBox x:Name="txtConfirmPassword" Margin="0,0,0,15"/>
+
+                    <Button x:Name="btnRegistrar" Content="Registrarse" Margin="0,5,0,10" Click="btnRegistrar_Click"/>
+
+                    <TextBlock HorizontalAlignment="Center">
+                        <Hyperlink x:Name="lnkLogin" Click="lnkLogin_Click">¿Ya tienes cuenta? Inicia sesión aquí</Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Pie de página -->
+        <TextBlock Grid.Row="2" Text="© 2023 TryOn. Todos los derechos reservados." 
+                   HorizontalAlignment="Center" Margin="0,10,0,10" Foreground="#888888"/>
+    </Grid>
+</Window>

@@ -1,0 +1,150 @@
+﻿<Page x:Class="GUI.ReportesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Reportes">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Selector de reportes -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="Seleccione un reporte:" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+            <ComboBox x:Name="cmbTipoReporte" SelectionChanged="cmbTipoReporte_SelectionChanged">
+                <ComboBoxItem Content="Productos más vendidos"/>
+                <ComboBoxItem Content="Ventas por período"/>
+                <ComboBoxItem Content="Inventario bajo stock"/>
+                <ComboBoxItem Content="Ventas por categoría"/>
+            </ComboBox>
+        </StackPanel>
+
+        <!-- Contenido del reporte -->
+        <TabControl Grid.Row="1" x:Name="tabReportes">
+            <!-- Productos más vendidos -->
+            <TabItem Header="Productos más vendidos" Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Filtros -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,10">
+                        <TextBlock Text="Período:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="cmbPeriodoProductos" Width="150" Margin="0,0,20,0" SelectionChanged="cmbPeriodoProductos_SelectionChanged">
+                            <ComboBoxItem Content="Último mes"/>
+                            <ComboBoxItem Content="Últimos 3 meses"/>
+                            <ComboBoxItem Content="Último año"/>
+                            <ComboBoxItem Content="Todo el tiempo"/>
+                        </ComboBox>
+
+                        <Button Content="Generar Reporte" Click="btnGenerarReporteProductos_Click"/>
+                    </StackPanel>
+
+                    <!-- DataGrid de productos más vendidos -->
+                    <DataGrid x:Name="dgProductosMasVendidos" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Producto" Binding="{Binding Nombre}" Width="200"/>
+                            <DataGridTextColumn Header="Categoría" Binding="{Binding Categoria}" Width="150"/>
+                            <DataGridTextColumn Header="Cantidad Vendida" Binding="{Binding CantidadVendida}" Width="120"/>
+                            <DataGridTextColumn Header="Total Ventas" Binding="{Binding TotalVentas, StringFormat=C}" Width="120"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- Ventas por período -->
+            <TabItem Header="Ventas por período" Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Filtros -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,10">
+                        <TextBlock Text="Desde:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <DatePicker x:Name="dpFechaDesde" Width="120" Margin="0,0,20,0"/>
+
+                        <TextBlock Text="Hasta:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <DatePicker x:Name="dpFechaHasta" Width="120" Margin="0,0,20,0"/>
+
+                        <Button Content="Generar Reporte" Click="btnGenerarReporteVentas_Click"/>
+                    </StackPanel>
+
+                    <!-- DataGrid de ventas por período -->
+                    <DataGrid x:Name="dgVentasPorPeriodo" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="100"/>
+                            <DataGridTextColumn Header="Cantidad de Pedidos" Binding="{Binding CantidadPedidos}" Width="150"/>
+                            <DataGridTextColumn Header="Total Ventas" Binding="{Binding TotalVentas, StringFormat=C}" Width="120"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- Inventario bajo stock -->
+            <TabItem Header="Inventario bajo stock" Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Filtros -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,10">
+                        <TextBlock Text="Stock mínimo:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBox x:Name="txtStockMinimo" Width="80" Margin="0,0,20,0" Text="10"/>
+
+                        <Button Content="Generar Reporte" Click="btnGenerarReporteStock_Click"/>
+                    </StackPanel>
+
+                    <!-- DataGrid de inventario bajo stock -->
+                    <DataGrid x:Name="dgInventarioBajoStock" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Producto" Binding="{Binding Prenda.Nombre}" Width="200"/>
+                            <DataGridTextColumn Header="Talla" Binding="{Binding Talla}" Width="80"/>
+                            <DataGridTextColumn Header="Color" Binding="{Binding Color}" Width="100"/>
+                            <DataGridTextColumn Header="Stock Actual" Binding="{Binding Cantidad}" Width="100"/>
+                            <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="150"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- Ventas por categoría -->
+            <TabItem Header="Ventas por categoría" Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Filtros -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,10">
+                        <TextBlock Text="Período:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="cmbPeriodoCategorias" Width="150" Margin="0,0,20,0" SelectionChanged="cmbPeriodoCategorias_SelectionChanged">
+                            <ComboBoxItem Content="Último mes"/>
+                            <ComboBoxItem Content="Últimos 3 meses"/>
+                            <ComboBoxItem Content="Último año"/>
+                            <ComboBoxItem Content="Todo el tiempo"/>
+                        </ComboBox>
+
+                        <Button Content="Generar Reporte" Click="btnGenerarReporteCategorias_Click"/>
+                    </StackPanel>
+
+                    <!-- DataGrid de ventas por categoría -->
+                    <DataGrid x:Name="dgVentasPorCategoria" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Categoría" Binding="{Binding Nombre}" Width="200"/>
+                            <DataGridTextColumn Header="Cantidad de Productos" Binding="{Binding CantidadProductos}" Width="150"/>
+                            <DataGridTextColumn Header="Cantidad Vendida" Binding="{Binding CantidadVendida}" Width="120"/>
+                            <DataGridTextColumn Header="Total Ventas" Binding="{Binding TotalVentas, StringFormat=C}" Width="120"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>
