@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace ENTITIES
 {
-    internal class Inventario
+    public class Inventario
     {
+        public int Id { get; set; }
+        public int PrendaId { get; set; }
+        public string Talla { get; set; }
+        public string Color { get; set; }
+        public int Cantidad { get; set; }
+        public string Ubicacion { get; set; }
+
+        // Propiedades de navegación
+        public Prenda Prenda { get; set; }
     }
 }
