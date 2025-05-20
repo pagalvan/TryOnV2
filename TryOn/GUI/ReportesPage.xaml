@@ -8,16 +8,26 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Selector de reportes -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,15">
-            <TextBlock Text="Seleccione un reporte:" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
-            <ComboBox x:Name="cmbTipoReporte" SelectionChanged="cmbTipoReporte_SelectionChanged">
-                <ComboBoxItem Content="Productos más vendidos"/>
-                <ComboBoxItem Content="Ventas por período"/>
-                <ComboBoxItem Content="Inventario bajo stock"/>
-                <ComboBoxItem Content="Ventas por categoría"/>
-            </ComboBox>
-        </StackPanel>
+        <!-- Selector de reportes y botón de promociones -->
+        <Grid Grid.Row="0" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Seleccione un reporte:" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                <ComboBox x:Name="cmbTipoReporte" SelectionChanged="cmbTipoReporte_SelectionChanged">
+                    <ComboBoxItem Content="Productos más vendidos"/>
+                    <ComboBoxItem Content="Ventas por período"/>
+                    <ComboBoxItem Content="Inventario bajo stock"/>
+                    <ComboBoxItem Content="Ventas por categoría"/>
+                </ComboBox>
+            </StackPanel>
+
+            <Button Grid.Column="1" x:Name="btnEnviarPromocion" Content="Enviar Promoción por Telegram" 
+                    Margin="20,0,0,0" VerticalAlignment="Bottom" Click="btnEnviarPromocion_Click"/>
+        </Grid>
 
         <!-- Contenido del reporte -->
         <TabControl Grid.Row="1" x:Name="tabReportes">

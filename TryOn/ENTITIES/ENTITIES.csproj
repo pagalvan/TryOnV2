@@ -46,6 +46,7 @@
     <Compile Include="Inventario.cs" />
     <Compile Include="Pedido.cs" />
     <Compile Include="Prenda.cs" />
+    <Compile Include="Promocion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Usuario.cs" />
     <Compile Include="Venta.cs" />

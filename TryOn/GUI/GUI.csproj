@@ -69,6 +69,9 @@
       <DependentUpon>CatalogoPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters.cs" />
+    <Compile Include="EnviarPromocionDialog.xaml.cs">
+      <DependentUpon>EnviarPromocionDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="InventarioDialog.xaml.cs">
       <DependentUpon>InventarioDialog.xaml</DependentUpon>
     </Compile>
@@ -146,6 +149,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CatalogoPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EnviarPromocionDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

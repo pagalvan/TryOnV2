@@ -1,17 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
+using TryOn.BLL;
 
 namespace GUI
 {
-    /// <summary>
-    /// Lógica de interacción para App.xaml
-    /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            try
+            {
+                // Inicializar el servicio de Telegram
+                TelegramService.GetInstance();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al inicializar el servicio de Telegram: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }
