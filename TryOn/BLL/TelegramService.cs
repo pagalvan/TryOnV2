@@ -17,7 +17,7 @@ namespace TryOn.BLL
     {
         private static TelegramService _instance;
         private TelegramBotClient _botClient;
-        private readonly string _botToken = "7715674518:AAFdrNEYnshBgFm8maLv5rt1KFeSJMUOCho"; // Token del bot
+        private readonly string _botToken = "8079351471:AAFVpoMO1AcX85bVLNm5xKTn4IbHO0hpgZE"; // Token del bot
         private Dictionary<long, string> _chatIds = new Dictionary<long, string>(); // Almacena los chat_id de los usuarios
 
         private TelegramService()
@@ -41,13 +41,33 @@ namespace TryOn.BLL
             var cancelToken = token.Token;
             var receiverOptions = new ReceiverOptions { AllowedUpdates = { } };
 
+            // La versión actual de Telegram.Bot usa una sobrecarga diferente
             _botClient.StartReceiving(
-                updateHandler: OnUpdateReceived,
-                errorHandler: OnErrorReceived,
+                updateHandler: HandleUpdateAsync,
+                pollingErrorHandler: HandlePollingErrorAsync,
                 receiverOptions: receiverOptions,
                 cancellationToken: cancelToken
             );
         }
+
+        // Métodos para manejar actualizaciones y errores
+        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await OnUpdateReceived(botClient, update, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al procesar actualización: {ex.Message}");
+            }
+        }
+
+        private async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+        {
+            await OnErrorReceived(botClient, exception, cancellationToken);
+        }
+
 
         private async Task OnUpdateReceived(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
