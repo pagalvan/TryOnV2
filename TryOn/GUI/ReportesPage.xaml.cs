@@ -1,10 +1,12 @@
 ﻿using ENTITIES;
+using GUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using TryOn.BLL;
+
 
 namespace GUI
 {
@@ -13,6 +15,7 @@ namespace GUI
         private readonly PedidoService _pedidoService;
         private readonly PrendaService _prendaService;
         private readonly InventarioService _inventarioService;
+        private readonly TelegramService _telegramService;
 
         private List<Pedido> _pedidos;
         private List<Prenda> _prendas;
@@ -24,6 +27,7 @@ namespace GUI
             _pedidoService = new PedidoService();
             _prendaService = new PrendaService();
             _inventarioService = new InventarioService();
+            _telegramService = TelegramService.GetInstance();
 
             // Inicializar fechas
             dpFechaDesde.SelectedDate = DateTime.Now.AddMonths(-1);
@@ -282,6 +286,12 @@ namespace GUI
                 default:
                     return fechaActual.AddMonths(-1);
             }
+        }
+
+        private void btnEnviarPromocion_Click(object sender, RoutedEventArgs e)
+        {
+            EnviarPromocionDialog dialog = new EnviarPromocionDialog();
+            dialog.ShowDialog();
         }
     }
 }

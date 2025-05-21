@@ -1,0 +1,95 @@
+﻿<Window x:Class="GUI.EnviarPromocionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Enviar Promoción por Telegram" Height="564" Width="600"
+        WindowStartupLocation="CenterScreen" 
+        Background="{StaticResource BackgroundBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Encabezado -->
+        <TextBlock Grid.Row="0" Text="Enviar Promoción por Telegram" FontSize="20" FontWeight="SemiBold" Margin="20,20,20,10"/>
+
+        <!-- Formulario -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20,0,20,0">
+                <TextBlock Text="Seleccione una promoción existente:" Margin="0,0,0,5"/>
+                <ComboBox x:Name="cmbPromociones" Margin="0,0,0,15" SelectionChanged="cmbPromociones_SelectionChanged"/>
+
+                <TextBlock Text="O cree una nueva promoción:" Margin="0,10,0,15" FontWeight="SemiBold"/>
+
+                <TextBlock Text="Título" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtTitulo" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Descripción" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtDescripcion" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                        <TextBlock Text="Porcentaje de Descuento" Margin="0,0,0,5"/>
+                        <TextBox x:Name="txtPorcentajeDescuento" Margin="0,0,0,15"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                        <TextBlock Text="Código de Promoción" Margin="0,0,0,5"/>
+                        <TextBox x:Name="txtCodigoPromocion" Margin="0,0,0,15"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                        <TextBlock Text="Fecha de Inicio" Margin="0,0,0,5"/>
+                        <DatePicker x:Name="dpFechaInicio" Margin="0,0,0,15"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                        <TextBlock Text="Fecha de Fin" Margin="0,0,0,5"/>
+                        <DatePicker x:Name="dpFechaFin" Margin="0,0,0,15"/>
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="Aplicar a:" Margin="0,0,0,5"/>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                    <RadioButton x:Name="rbTodas" Content="Todas las prendas" Margin="0,0,15,0" IsChecked="True"/>
+                    <RadioButton x:Name="rbCategoria" Content="Categoría" Margin="0,0,15,0" Checked="rbCategoria_Checked"/>
+                    <RadioButton x:Name="rbPrenda" Content="Prenda específica" Margin="0,0,15,0" Checked="rbPrenda_Checked"/>
+                </StackPanel>
+
+                <StackPanel x:Name="pnlCategoria" Visibility="Collapsed">
+                    <TextBlock Text="Categoría" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="cmbCategoria" Margin="0,0,0,15"/>
+                </StackPanel>
+
+                <StackPanel x:Name="pnlPrenda" Visibility="Collapsed">
+                    <TextBlock Text="Prenda" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="cmbPrenda" Margin="0,0,0,15"/>
+                </StackPanel>
+
+                <TextBlock Text="Mensaje adicional (opcional)" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtMensajeAdicional" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+
+                <TextBlock x:Name="txtUsuariosRegistrados" Text="Usuarios registrados en Telegram: 0" Margin="0,10,0,5"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Botones -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,10,20,20">
+            <Button x:Name="btnCancelar" Content="Cancelar" Width="100" Margin="0,0,10,0" Click="btnCancelar_Click"/>
+            <Button x:Name="btnEnviar" Content="Enviar Promoción" Width="150" Click="btnEnviar_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
