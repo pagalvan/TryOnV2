@@ -119,9 +119,6 @@ namespace GUI
             if (pedido != null)
             {
                 MostrarDetallesPedido(pedido);
-
-                // Cambiar a la pestaña de detalles
-                ((TabControl)this.Parent).SelectedIndex = 1;
             }
         }
 
