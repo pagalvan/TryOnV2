@@ -19,9 +19,7 @@ namespace TryOn.DAL
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = conexion;
-                    cmd.CommandText = @"INSERT INTO usuarios (nombre, apellido, email, password, telefono, direccion, es_admin) 
-                                        VALUES (@nombre, @apellido, @email, @password, @telefono, @direccion, @es_admin) 
-                                        RETURNING id";
+                    cmd.CommandText = "SELECT * FROM sp_registrar_usuario(@nombre, @apellido, @email, @password, @telefono, @direccion, @es_admin)";
 
                     cmd.Parameters.AddWithValue("@nombre", usuario.Nombre);
                     cmd.Parameters.AddWithValue("@apellido", usuario.Apellido);
@@ -31,7 +29,19 @@ namespace TryOn.DAL
                     cmd.Parameters.AddWithValue("@direccion", NpgsqlDbType.Text, (object)usuario.Direccion ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@es_admin", usuario.EsAdmin);
 
-                    usuario.Id = (int)cmd.ExecuteScalar();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            usuario.Id = Convert.ToInt32(reader["id_usuario"]);
+                            string mensaje = reader["mensaje"].ToString();
+
+                            if (usuario.Id == 0 && !string.IsNullOrEmpty(mensaje))
+                            {
+                                throw new Exception(mensaje);
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -52,9 +62,22 @@ namespace TryOn.DAL
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = conexion;
-                    cmd.CommandText = "DELETE FROM usuarios WHERE id = @id";
+                    cmd.CommandText = "SELECT * FROM sp_eliminar_usuario(@id)";
                     cmd.Parameters.AddWithValue("@id", id);
-                    cmd.ExecuteNonQuery();
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            bool resultado = Convert.ToBoolean(reader["resultado"]);
+                            string mensaje = reader["mensaje"].ToString();
+
+                            if (!resultado)
+                            {
+                                throw new Exception(mensaje);
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -180,14 +203,7 @@ namespace TryOn.DAL
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = conexion;
-                    cmd.CommandText = @"UPDATE usuarios 
-                                        SET nombre = @nombre, 
-                                            apellido = @apellido, 
-                                            email = @email, 
-                                            telefono = @telefono, 
-                                            direccion = @direccion, 
-                                            es_admin = @es_admin 
-                                        WHERE id = @id";
+                    cmd.CommandText = "SELECT * FROM sp_editar_usuario(@id, @nombre, @apellido, @email, @telefono, @direccion, @es_admin)";
 
                     cmd.Parameters.AddWithValue("@id", usuario.Id);
                     cmd.Parameters.AddWithValue("@nombre", usuario.Nombre);
@@ -197,12 +213,52 @@ namespace TryOn.DAL
                     cmd.Parameters.AddWithValue("@direccion", NpgsqlDbType.Text, (object)usuario.Direccion ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@es_admin", usuario.EsAdmin);
 
-                    cmd.ExecuteNonQuery();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            bool resultado = Convert.ToBoolean(reader["resultado"]);
+                            string mensaje = reader["mensaje"].ToString();
+
+                            if (!resultado)
+                            {
+                                throw new Exception(mensaje);
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
                 throw new Exception("Error al actualizar usuario: " + ex.Message);
+            }
+            finally
+            {
+                CerrarConexion();
+            }
+        }
+
+        public bool ValidateLogin(string email, string password)
+        {
+            try
+            {
+                AbrirConexion();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = conexion;
+                    cmd.CommandText = "SELECT * FROM sp_validar_login(@email, @password)";
+                    cmd.Parameters.AddWithValue("@email", email);
+                    cmd.Parameters.AddWithValue("@password", password);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        return reader.Read(); // Si devuelve filas, el login es válido
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al validar login: " + ex.Message);
             }
             finally
             {

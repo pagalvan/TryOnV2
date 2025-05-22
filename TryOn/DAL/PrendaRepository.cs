@@ -49,12 +49,73 @@ namespace TryOn.DAL
             try
             {
                 AbrirConexion();
+
+                // Verificar si la prenda tiene promociones asociadas
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = conexion;
-                    cmd.CommandText = "DELETE FROM prendas WHERE id = @id";
+                    cmd.CommandText = "SELECT COUNT(*) FROM promociones WHERE prenda_id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
-                    cmd.ExecuteNonQuery();
+                    int promocionesCount = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    if (promocionesCount > 0)
+                    {
+                        throw new Exception("No se puede eliminar la prenda porque tiene promociones asociadas. Elimine primero las promociones relacionadas.");
+                    }
+                }
+
+                // Verificar si hay detalles de pedido que referencian al inventario de esta prenda
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = conexion;
+                    cmd.CommandText = @"
+                SELECT COUNT(*) 
+                FROM detalles_pedido dp
+                JOIN inventario i ON dp.inventario_id = i.id
+                WHERE i.prenda_id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    int detallesCount = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    if (detallesCount > 0)
+                    {
+                        throw new Exception("No se puede eliminar la prenda porque está asociada a pedidos existentes. Elimine primero los pedidos relacionados.");
+                    }
+                }
+
+                // Iniciar una transacción para asegurar que ambas operaciones se completen o ninguna
+                using (var transaction = conexion.BeginTransaction())
+                {
+                    try
+                    {
+                        // Primero eliminar los registros de inventario asociados
+                        using (var cmd = new NpgsqlCommand())
+                        {
+                            cmd.Connection = conexion;
+                            cmd.Transaction = transaction;
+                            cmd.CommandText = "DELETE FROM inventario WHERE prenda_id = @prenda_id";
+                            cmd.Parameters.AddWithValue("@prenda_id", id);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // Luego eliminar la prenda
+                        using (var cmd = new NpgsqlCommand())
+                        {
+                            cmd.Connection = conexion;
+                            cmd.Transaction = transaction;
+                            cmd.CommandText = "DELETE FROM prendas WHERE id = @id";
+                            cmd.Parameters.AddWithValue("@id", id);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // Confirmar la transacción
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Revertir la transacción en caso de error
+                        transaction.Rollback();
+                        throw new Exception("Error en la transacción: " + ex.Message);
+                    }
                 }
             }
             catch (Exception ex)
