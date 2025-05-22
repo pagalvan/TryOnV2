@@ -1,0 +1,366 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TryOn - Catálogo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #e9dccf; /* Color beige similar a la imagen */
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #e9dccf;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 28px;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .icon {
+            width: 36px;
+            height: 36px;
+            background-color: #a08b7b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+
+        .search-icon::before {
+            content: "";
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid white;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .search-icon::after {
+            content: "";
+            display: inline-block;
+            width: 2px;
+            height: 8px;
+            background-color: white;
+            position: relative;
+            transform: rotate(-45deg);
+            top: 4px;
+            left: -4px;
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+            .cart-icon::before {
+                content: "";
+                display: inline-block;
+                width: 16px;
+                height: 14px;
+                border: 2px solid white;
+                border-radius: 2px;
+                position: relative;
+            }
+
+            .cart-icon::after {
+                content: "";
+                display: inline-block;
+                width: 2px;
+                height: 8px;
+                background-color: white;
+                position: absolute;
+                top: 6px;
+                left: 8px;
+                box-shadow: 18px 0 0 white;
+            }
+
+        #filtros {
+            margin: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filtro-btn {
+            padding: 8px 15px;
+            background-color: #a08b7b;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .filtro-btn:hover {
+                background-color: #8a7666;
+            }
+
+            .filtro-btn.active {
+                background-color: #6d5d4e;
+            }
+
+        .busqueda {
+            margin: 20px;
+        }
+
+            .busqueda input {
+                padding: 8px 15px;
+                border: 1px solid #ccc;
+                border-radius: 20px;
+                width: 250px;
+            }
+
+        .catalogo {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 5px;
+        }
+
+        .prenda {
+            background-color: #fff;
+            border-radius: 5px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+            .prenda:hover {
+                transform: scale(1.02);
+            }
+
+            .prenda img {
+                width: 100%;
+                height: 350px;
+                object-fit: cover;
+            }
+
+        .info {
+            padding: 15px;
+        }
+
+            .info h3 {
+                margin: 5px 0;
+                font-size: 18px;
+                font-weight: normal;
+            }
+
+        .precio {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .botones {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 5px 10px;
+            border: 1px solid #a08b7b;
+            background-color: transparent;
+            color: #a08b7b;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .btn:hover {
+                background-color: #a08b7b;
+                color: white;
+            }
+
+        .btn-agregar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .btn-agregar::before {
+                content: "+";
+                font-size: 16px;
+                margin-right: 5px;
+            }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">TryOn</a>
+        <div class="header-icons">
+            <div class="icon search-icon"></div>
+            <div class="icon cart-icon"></div>
+        </div>
+    </header>
+
+    <div class="busqueda">
+        <input type="text" id="busqueda-nombre" placeholder="Buscar por nombre..." oninput="filtrarPrendas()">
+    </div>
+
+    <div id="filtros">
+        <!-- Los filtros de categoría se generarán dinámicamente -->
+    </div>
+
+    <div class="catalogo" id="catalogo"></div>
+
+    <script>
+        let prendasOriginal = [];
+        let categoriaSeleccionada = null;
+        let busquedaNombre = '';
+
+        function filtrarPrendas() {
+            busquedaNombre = document.getElementById('busqueda-nombre').value.toLowerCase();
+            mostrarPrendas();
+        }
+
+        function mostrarPrendas() {
+            const contenedor = document.getElementById("catalogo");
+            contenedor.innerHTML = '';
+
+            // Aplicar filtros
+            let prendasFiltradas = prendasOriginal;
+
+            // Filtrar por categoría si hay una seleccionada
+            if (categoriaSeleccionada) {
+                prendasFiltradas = prendasFiltradas.filter(p =>
+                    p.categoria?.nombre?.toLowerCase() === categoriaSeleccionada.toLowerCase()
+                );
+            }
+
+            // Filtrar por nombre si hay texto en la búsqueda
+            if (busquedaNombre) {
+                prendasFiltradas = prendasFiltradas.filter(p =>
+                    p.nombre.toLowerCase().includes(busquedaNombre)
+                );
+            }
+
+            // Mostrar las prendas filtradas
+            prendasFiltradas.forEach(prenda => {
+                // Formatear el precio con separador de miles
+                const precioFormateado = new Intl.NumberFormat('es-CO', {
+                    style: 'currency',
+                    currency: 'COP',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(prenda.precio);
+
+                contenedor.innerHTML += `
+              <div class="prenda">
+                <img src="${prenda.imagenUrl}" alt="${prenda.nombre}">
+                <div class="info">
+                  <h3>${prenda.nombre}</h3>
+                  <p class="precio">${precioFormateado}</p>
+                  <div class="botones">
+                    <button class="btn btn-agregar">Agregar</button>
+                    <button class="btn">Probar</button>
+                  </div>
+                </div>
+              </div>
+            `;
+            });
+        }
+
+        function crearFiltrosCategorias(prendas) {
+            // Obtener categorías únicas
+            const categorias = [...new Set(prendas.map(p => p.categoria?.nombre).filter(c => c))];
+            const filtroContainer = document.getElementById("filtros");
+
+            // Limpiar filtros existentes
+            filtroContainer.innerHTML = '';
+
+            // Crear botón para cada categoría
+            categorias.forEach(categoria => {
+                const boton = document.createElement('button');
+                boton.className = 'filtro-btn';
+                boton.textContent = categoria;
+                boton.onclick = () => {
+                    // Desactivar botón activo anterior
+                    document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('active'));
+
+                    if (categoriaSeleccionada === categoria) {
+                        // Si se hace clic en la misma categoría, quitar el filtro
+                        categoriaSeleccionada = null;
+                    } else {
+                        // Activar nueva categoría
+                        categoriaSeleccionada = categoria;
+                        boton.classList.add('active');
+                    }
+
+                    mostrarPrendas();
+                };
+                filtroContainer.appendChild(boton);
+            });
+
+            // Opción para quitar filtro
+            const limpiar = document.createElement('button');
+            limpiar.textContent = "Ver todo";
+            limpiar.className = 'filtro-btn';
+            limpiar.onclick = () => {
+                categoriaSeleccionada = null;
+                document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('active'));
+                mostrarPrendas();
+            };
+            filtroContainer.appendChild(limpiar);
+        }
+
+        // Cargar desde la API
+        fetch('/api/Prendas')
+            .then(res => res.json())
+            .then(data => {
+                prendasOriginal = data;
+                crearFiltrosCategorias(data);
+                mostrarPrendas();
+            })
+            .catch(error => {
+                console.error('Error al cargar los datos:', error);
+                // Para pruebas, usar datos de ejemplo si la API falla
+                prendasOriginal = [
+                    {
+                        id: 1,
+                        nombre: "Baggy jean",
+                        precio: 110000,
+                        imagenUrl: "https://placeholder.svg?height=350&width=300",
+                        descripcion: "Jean estilo baggy",
+                        categoria: {
+                            nombre: "Pantalones"
+                        }
+                    },
+                    {
+                        id: 2,
+                        nombre: "T-shirt",
+                        precio: 89900,
+                        imagenUrl: "https://placeholder.svg?height=350&width=300",
+                        descripcion: "Camiseta básica",
+                        categoria: {
+                            nombre: "Camisetas"
+                        }
+                    }
+                ];
+                crearFiltrosCategorias(prendasOriginal);
+                mostrarPrendas();
+            });
+    </script>
+
+</body>
+</html>

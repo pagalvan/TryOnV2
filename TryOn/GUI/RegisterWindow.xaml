@@ -111,5 +111,6 @@
                 </TextBlock>
             </StackPanel>
         </Grid>
+        <Image Source="/Resources/logo.png" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Height="338" Width="332" RenderTransformOrigin="0.346,0.518"/>
     </Grid>
 </Window>

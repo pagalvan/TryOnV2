@@ -94,6 +94,7 @@ public partial class TryOnDbContext : DbContext
             entity.Property(e => e.FechaCreacion).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.Categoria).WithMany(p => p.Prenda).HasConstraintName("prendas_categoria_id_fkey");
+
         });
 
         modelBuilder.Entity<Promocione>(entity =>

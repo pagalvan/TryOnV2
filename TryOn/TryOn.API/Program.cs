@@ -45,6 +45,8 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowWebApp");
 
+app.UseStaticFiles();
+
 app.UseAuthorization();
 
 app.MapControllers();

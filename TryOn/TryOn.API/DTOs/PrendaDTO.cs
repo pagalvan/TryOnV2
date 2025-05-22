@@ -10,5 +10,9 @@
         public int CategoriaId { get; set; }
         public CategoriaDTO Categoria { get; set; }
         public string ImagenUrl { get; set; }
+        public string Color { get; set; }
+
+
+
     }
 }

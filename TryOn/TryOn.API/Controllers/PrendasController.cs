@@ -48,6 +48,7 @@ namespace TryOn.API.Controllers
                 Precio = p.Costo,
                 CategoriaId = p.CategoriaId,
                 Categoria = p.Categoria != null ? new CategoriaDTO
+
                 {
                     Id = p.Categoria.Id,
                     Nombre = p.Categoria.Nombre
