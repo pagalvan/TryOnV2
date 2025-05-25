@@ -83,7 +83,6 @@
     <Compile Include="PromocionRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UsuarioRepository.cs" />
-    <Compile Include="VentasRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ENTITIES\ENTITIES.csproj">
