@@ -468,6 +468,16 @@ async function initializeCameraKit(): Promise<void> {
 
     console.log("✅ CameraKit inicializado correctamente")
 
+    // Exponer variables para debug panel
+    window.cameraKit = cameraKit
+    window.session = session
+
+    // Disparar evento para notificar al debug panel
+    const event = new CustomEvent("cameraKitReady", {
+      detail: { cameraKit, session },
+    })
+    window.dispatchEvent(event)
+
     // Ocultar loading
     const loadingElement = document.getElementById("loading")
     if (loadingElement) {
@@ -594,6 +604,8 @@ declare global {
     applyLens: (categoria: string, color: string) => Promise<void>
     removeLens: () => Promise<void>
     forceChangeCategory: (categoria: CategoriaType) => Promise<void>
+    cameraKit: any
+    session: any
   }
 }
 

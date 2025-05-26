@@ -814,6 +814,126 @@
         </div>
     </main>
 
+    <!-- PANEL DE DEBUG OCULTO PARA PROBAR LENTES -->
+    <div id="debugPanel" style="
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        max-width: 300px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 2000;
+        font-family: monospace;
+        font-size: 12px;
+    ">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h4 style="margin: 0; color: #00ff00;">🔧 DEBUG LENTES</h4>
+            <button onclick="toggleDebugPanel()" style="
+                background: #ff4444;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 25px;
+                height: 25px;
+                cursor: pointer;
+                font-size: 12px;
+            ">×</button>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <strong>🎯 CAMISETAS:</strong><br>
+            <button onclick="testLens('732ae023-0a17-4430-a84f-f5c89c59ea9f', 'Camiseta Blanca')" class="debug-btn">Blanca</button>
+            <button onclick="testLens('52e517f6-79f2-438d-9279-02dd6d46b887', 'Camiseta Negra')" class="debug-btn">Negra</button>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <strong>👗 VESTIDOS:</strong><br>
+            <button onclick="testLens('45108ebf-72cb-4499-a115-f47dcbcbac26', 'Vestido Blanco')" class="debug-btn">Blanco</button>
+            <button onclick="testLens('015a1d10-6e76-4b81-aa84-7b5d40b8b6e9', 'Vestido Negro')" class="debug-btn">Negro</button>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <strong>🎓 UNIFORMES:</strong><br>
+            <button onclick="testLens('63e84884-49eb-4b06-96d1-7da1bebc800b', 'Uniforme')" class="debug-btn">Uniforme</button>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <strong>👖 PANTALONES:</strong><br>
+            <button onclick="testLens('52e517f6-79f2-438d-9279-02dd6d46b887', 'Pantalón')" class="debug-btn">Pantalón</button>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <button onclick="clearLens()" style="
+                background: #ff6b6b;
+                color: white;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 5px;
+                cursor: pointer;
+                width: 100%;
+                margin-top: 10px;
+            ">🧹 LIMPIAR LENTE</button>
+        </div>
+        
+        <div id="debugStatus" style="
+            background: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 10px;
+            max-height: 100px;
+            overflow-y: auto;
+        ">
+            <div style="color: #00ff00;">✅ Panel de debug listo</div>
+        </div>
+    </div>
+
+    <!-- Botón para mostrar/ocultar debug panel -->
+    <button id="debugToggle" onclick="toggleDebugPanel()" style="
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: #333;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        font-size: 16px;
+        z-index: 1999;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+    ">🔧</button>
+
+    <style>
+    .debug-btn {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        margin: 2px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 10px;
+        transition: background 0.3s ease;
+    }
+
+    .debug-btn:hover {
+        background: #45a049;
+        transform: scale(1.05);
+    }
+
+    #debugToggle:hover {
+        background: #555;
+        transform: scale(1.1);
+    }
+    </style>
+
     <script>
         // Variables globales para el carrito
         let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -1138,6 +1258,110 @@
                 }
             });
         });
+
+        // FUNCIONES DE DEBUG PARA PROBAR LENTES
+        let debugPanelVisible = false;
+
+        function toggleDebugPanel() {
+            const panel = document.getElementById('debugPanel');
+            const toggle = document.getElementById('debugToggle');
+            
+            debugPanelVisible = !debugPanelVisible;
+            
+            if (debugPanelVisible) {
+                panel.style.transform = 'translateX(0)';
+                toggle.style.transform = 'translateX(320px)';
+                toggle.textContent = '❌';
+            } else {
+                panel.style.transform = 'translateX(-100%)';
+                toggle.style.transform = 'translateX(0)';
+                toggle.textContent = '🔧';
+            }
+        }
+
+        function addDebugLog(message, type = 'info') {
+            const status = document.getElementById('debugStatus');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#00ff00' : '#ffffff';
+            
+            const logEntry = document.createElement('div');
+            logEntry.style.color = color;
+            logEntry.innerHTML = `[${timestamp}] ${message}`;
+            
+            status.appendChild(logEntry);
+            status.scrollTop = status.scrollHeight;
+            
+            // Mantener solo los últimos 10 logs
+            while (status.children.length > 10) {
+                status.removeChild(status.firstChild);
+            }
+        }
+
+        async function testLens(lensId, lensName) {
+            addDebugLog(`🎯 Probando: ${lensName}`, 'info');
+            addDebugLog(`📷 Lens ID: ${lensId}`, 'info');
+            
+            try {
+                // Verificar que CameraKit esté inicializado
+                if (!window.cameraKit || !window.session) {
+                    addDebugLog('❌ CameraKit no inicializado', 'error');
+                    return;
+                }
+                
+                addDebugLog('🔄 Cargando lente...', 'info');
+                
+                // Cargar y aplicar el lente directamente
+                const lens = await window.cameraKit.lensRepository.loadLens(
+                    lensId, 
+                    "9cb32233-4f96-4a34-bdb8-b405ffdc21a3"
+                );
+                
+                await window.session.applyLens(lens);
+                
+                addDebugLog(`✅ ${lensName} aplicado!`, 'success');
+                
+                // Mostrar notificación en la UI principal
+                showNotification(`Lente aplicado: ${lensName}`);
+                
+            } catch (error) {
+                addDebugLog(`❌ Error: ${error.message}`, 'error');
+                console.error('Error aplicando lente:', error);
+            }
+        }
+
+        async function clearLens() {
+            addDebugLog('🧹 Limpiando lente...', 'info');
+            
+            try {
+                if (!window.session) {
+                    addDebugLog('❌ Session no disponible', 'error');
+                    return;
+                }
+                
+                await window.session.clearLens();
+                addDebugLog('✅ Lente limpiado', 'success');
+                showNotification('Lente removido');
+                
+            } catch (error) {
+                addDebugLog(`❌ Error limpiando: ${error.message}`, 'error');
+                console.error('Error limpiando lente:', error);
+            }
+        }
+
+        // Exponer variables globales para debug
+        window.cameraKit = null;
+        window.session = null;
+
+        // Modificar la función de inicialización para exponer las variables
+        const originalInitScript = document.querySelector('script[src="/src/main.ts"]');
+        if (originalInitScript) {
+            // Agregar listener para cuando se inicialice CameraKit
+            window.addEventListener('cameraKitReady', function(event) {
+                window.cameraKit = event.detail.cameraKit;
+                window.session = event.detail.session;
+                addDebugLog('✅ CameraKit conectado al debug', 'success');
+            });
+        }
     </script>
     
     <!-- Cargar el módulo TypeScript -->
