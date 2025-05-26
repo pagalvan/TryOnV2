@@ -48,7 +48,8 @@ namespace GUI
                     new Categoria { Id = 2, Nombre = "Pantalones" },
                     new Categoria { Id = 3, Nombre = "Vestidos" },
                     new Categoria { Id = 4, Nombre = "Calzado" },
-                    new Categoria { Id = 5, Nombre = "Accesorios" }
+                    new Categoria { Id = 5, Nombre = "Accesorios" },
+                    new Categoria { Id = 6, Nombre = "Uniformes" }
                 };
 
                 cmbCategoria.ItemsSource = categorias;

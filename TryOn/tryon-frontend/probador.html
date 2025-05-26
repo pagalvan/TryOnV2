@@ -1,8 +1,8 @@
-﻿<<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Try On - Probador Virtual</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -477,6 +477,7 @@
             box-shadow: 0 20px 50px var(--shadow);
             border: 3px solid var(--tan);
             transition: all 0.3s ease;
+            position: relative;
         }
 
         #canvas:hover {
@@ -485,60 +486,86 @@
             border-color: var(--caput-mortuum);
         }
 
+        /* Loading overlay para el canvas */
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
         .controls {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             height: 640px;
-            min-width: 200px;
+            min-width: 300px;
         }
 
-        .controls > div {
+        .control-section {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 30px;
+            padding: 25px;
             border-radius: 20px;
             box-shadow: 0 8px 30px var(--shadow-light);
             border: 2px solid transparent;
             transition: all 0.3s ease;
+            margin-bottom: 20px;
         }
 
-        .controls > div:hover {
+        .control-section:hover {
             border-color: var(--tan);
             transform: translateY(-2px);
             box-shadow: 0 12px 40px var(--shadow);
         }
 
+        /* Info del producto */
+        .product-info {
+            text-align: center;
+        }
+
+        .product-info h3 {
+            color: var(--coffee);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .product-info p {
+            color: var(--caput-mortuum);
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Controles de color */
+        .color-section h4 {
+            color: var(--coffee);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
         .color-options {
             display: flex;
             gap: 15px;
-            margin-bottom: 30px;
             justify-content: center;
+            margin-bottom: 20px;
         }
 
         .color-dot {
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border: 3px solid var(--coffee);
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
             box-shadow: 0 4px 15px var(--shadow-light);
-        }
-
-        .color-dot::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            transform: translate(-50%, -50%);
         }
 
         .color-dot:hover {
@@ -547,16 +574,59 @@
             border-color: var(--caput-mortuum);
         }
 
-        .color-dot:hover::before {
-            width: 100%;
-            height: 100%;
-        }
-
         .color-dot.selected {
             border-color: var(--caput-mortuum);
             box-shadow: 0 0 0 3px rgba(99, 32, 36, 0.3);
+            transform: scale(1.1);
         }
 
+        /* Botones de acción */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-action {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--coffee);
+            border: 2px solid var(--coffee);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .btn-primary:hover {
+            background: var(--gradient-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gradient-accent);
+            color: white;
+        }
+
+        /* Feedback */
         .feedback {
             margin-top: 20px;
             text-align: center;
@@ -591,194 +661,39 @@
             font-size: 16px;
         }
 
-        .agregar-btn {
-            margin-top: 25px;
-            padding: 15px 30px;
-            background: var(--gradient-accent);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 15px var(--shadow);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .agregar-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient-primary);
-            transition: left 0.3s ease;
-            z-index: -1;
-        }
-
-        .agregar-btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 12px 30px var(--shadow);
-        }
-
-        .agregar-btn:hover::before {
-            left: 0;
-        }
-
-        .volver-btn {
-            margin-top: 15px;
-            padding: 12px 25px;
-            background: transparent;
-            color: var(--coffee);
-            border: 2px solid var(--coffee);
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .volver-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient-secondary);
-            transition: left 0.3s ease;
-            z-index: -1;
-        }
-
-        .volver-btn:hover {
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--shadow);
-            border-color: var(--caput-mortuum);
-        }
-
-        .volver-btn:hover::before {
-            left: 0;
-        }
-
-        .btn-round {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--gradient-accent);
-            border: 4px solid white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 25px var(--shadow);
-            align-self: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-        }
-
-        .btn-round::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            transform: translate(-50%, -50%);
-        }
-
-        .btn-round:hover {
-            transform: translateY(-5px) scale(1.1);
-            box-shadow: 0 15px 40px var(--shadow);
-            background: var(--gradient-primary);
-            border-color: var(--tan);
-        }
-
-        .btn-round:hover::before {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Efectos de scroll para el header */
-        .header-scrolled {
-            background: rgba(99, 32, 36, 0.95) !important;
-            color: white;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             header {
                 padding: 15px 20px;
             }
-
-            .logo-light,
-            .logo-dark {
-                height: 65px;
-            }
-
+            
             main {
                 flex-direction: column;
                 align-items: center;
                 gap: 30px;
                 padding: 20px;
             }
-
+            
             #canvas {
                 width: 90%;
                 max-width: 400px;
                 height: auto;
                 aspect-ratio: 3/4;
             }
-
+            
             .controls {
                 width: 90%;
                 max-width: 400px;
                 height: auto;
-                gap: 20px;
             }
-
-            .controls > div {
-                padding: 20px;
-            }
-
+            
             .color-options {
                 gap: 10px;
             }
-
+            
             .color-dot {
-                width: 30px;
-                height: 30px;
-            }
-
-            .feedback span {
-                font-size: 25px;
-                margin: 0 5px;
-            }
-
-            .cart-sidebar {
-                width: 100%;
-                right: -100%;
+                width: 35px;
+                height: 35px;
             }
         }
 
@@ -814,7 +729,7 @@
     <!-- Notificación -->
     <div class="notification" id="notification">
         <i class="fas fa-check-circle"></i>
-        <span>Producto agregado al carrito</span>
+        <span>Lente aplicado</span>
     </div>
 
     <!-- Carrito lateral -->
@@ -837,13 +752,13 @@
     </div>
 
     <header>
-        <a href="#" class="logo">
+        <a href="catalogo.html" class="logo">
             <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/TryOn_logoApp-Uc06Ac4D6jfoa9ktsrrK0Mc2HtbsTT.png" alt="TryOn Logo" class="logo-light">
             <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/tryOn%20letras%20500x500-YVi3za4V9KW76yvWzkG5daMDwhrn0D.png" alt="TryOn Logo" class="logo-dark">
         </a>
         <div class="header-icons">
-            <div class="icon search-icon" id="searchToggle">
-                <i class="fas fa-search"></i>
+            <div class="icon search-icon" onclick="window.toggleCamera()">
+                <i class="fas fa-sync-alt"></i>
             </div>
             <div class="icon cart-icon" id="cartIcon">
                 <i class="fas fa-shopping-cart"></i>
@@ -853,45 +768,57 @@
     </header>
 
     <main>
-        <canvas id="canvas"></canvas>
+        <div style="position: relative;">
+            <canvas id="canvas"></canvas>
+            <div id="loading">
+                <h2>Iniciando cámara...</h2>
+                <p>Por favor, permite el acceso a la cámara</p>
+            </div>
+        </div>
+        
         <div class="controls">
-            <div>
+            <!-- Info del producto -->
+            <div class="control-section product-info" id="productInfo" style="display: none;">
+                <h3 id="productName">Producto</h3>
+                <p id="productPrice">$0</p>
+            </div>
+            
+            <!-- Controles de color -->
+            <div class="control-section color-section">
+                <h4>Seleccionar Color</h4>
                 <div class="color-options">
-                    <div class="color-dot" style="background-color: #7a2e2e;" data-color="#7a2e2e"></div>
-                    <div class="color-dot" style="background-color: #000000;" data-color="#000000"></div>
-                    <div class="color-dot" style="background-color: #cccccc;" data-color="#cccccc"></div>
+                    <div class="color-dot selected" style="background-color: #ffffff;" data-color="#ffffff" title="Blanco"></div>
+                    <div class="color-dot" style="background-color: #000000;" data-color="#000000" title="Negro"></div>
+                    <div class="color-dot" style="background-color: #7a2e2e;" data-color="#7a2e2e" title="Rojo"></div>
                 </div>
                 <div class="feedback">
                     <span data-feedback="like">👍</span>
                     <span data-feedback="dislike">👎</span>
                     <p>¿Qué te pareció?</p>
                 </div>
-                <button class="agregar-btn" id="agregarBtn">
-                    <i class="fas fa-plus"></i>
-                    Agregar
+            </div>
+            
+            
+            <!-- Botones de acción -->
+            <div class="control-section action-buttons">
+                <button class="btn-action btn-primary" onclick="window.capturePhoto()">
+                    <i class="fas fa-camera"></i> Capturar Foto
                 </button>
-                <button class="volver-btn" id="volverBtn">
-                    <i class="fas fa-arrow-left"></i>
-                    Volver
+                <button class="btn-action btn-secondary" id="agregarBtn">
+                    <i class="fas fa-plus"></i> Agregar al Carrito
+                </button>
+                <button class="btn-action btn-secondary" onclick="volver()">
+                    <i class="fas fa-arrow-left"></i> Volver al Catálogo
                 </button>
             </div>
-            <button class="btn-round" id="captureBtn">
-                <i class="fas fa-camera"></i>
-            </button>
         </div>
     </main>
 
     <script>
-        // Variables globales
-        let carrito = [];
-        let selectedColor = '#7a2e2e';
+        // Variables globales para el carrito
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        let selectedProduct = null;
         let selectedFeedback = null;
-        let currentOutfit = {
-            name: 'Outfit Virtual',
-            price: 89900,
-            color: selectedColor,
-            feedback: null
-        };
 
         // Elementos del DOM
         const cartIcon = document.getElementById('cartIcon');
@@ -903,9 +830,6 @@
         const cartContent = document.getElementById('cartContent');
         const cartTotal = document.getElementById('cartTotal');
         const agregarBtn = document.getElementById('agregarBtn');
-        const volverBtn = document.getElementById('volverBtn');
-        const captureBtn = document.getElementById('captureBtn');
-        const colorDots = document.querySelectorAll('.color-dot');
         const feedbackSpans = document.querySelectorAll('.feedback span');
 
         // Event listeners para el carrito
@@ -921,37 +845,10 @@
             closeCart();
         });
 
-        // Event listeners para los botones principales
+        // Event listener para agregar al carrito
         agregarBtn.addEventListener('click', function() {
             agregarAlCarrito();
         });
-
-        volverBtn.addEventListener('click', function() {
-            volver();
-        });
-
-        captureBtn.addEventListener('click', function() {
-            capturarOutfit();
-        });
-
-        // Funcionalidad de colores
-        colorDots.forEach(function(dot) {
-            dot.addEventListener('click', function() {
-                // Remover selección anterior
-                colorDots.forEach(function(d) {
-                    d.classList.remove('selected');
-                });
-                // Agregar selección actual
-                this.classList.add('selected');
-                selectedColor = this.dataset.color;
-                currentOutfit.color = selectedColor;
-                
-                console.log('Color seleccionado:', selectedColor);
-            });
-        });
-
-        // Seleccionar primer color por defecto
-        colorDots[0].classList.add('selected');
 
         // Funcionalidad de feedback
         feedbackSpans.forEach(function(span) {
@@ -966,7 +863,6 @@
                 // Agregar selección actual
                 this.classList.add('selected');
                 selectedFeedback = this.dataset.feedback;
-                currentOutfit.feedback = selectedFeedback;
                 
                 // Mostrar notificación de feedback
                 showFeedbackNotification(selectedFeedback);
@@ -988,17 +884,23 @@
         function agregarAlCarrito() {
             console.log('Agregando al carrito...');
             
-            const item = {
+            // Usar el producto seleccionado o crear uno por defecto
+            const producto = selectedProduct || {
                 id: Date.now(),
-                name: currentOutfit.name,
-                price: currentOutfit.price,
-                color: selectedColor,
+                nombre: 'Outfit Virtual',
+                precio: 89900
+            };
+
+            const item = {
+                id: producto.id,
+                name: producto.nombre,
+                price: producto.precio,
                 feedback: selectedFeedback,
                 quantity: 1
             };
 
             const existingItem = carrito.find(function(cartItem) {
-                return cartItem.name === item.name && cartItem.color === item.color;
+                return cartItem.id === item.id;
             });
 
             if (existingItem) {
@@ -1006,6 +908,9 @@
             } else {
                 carrito.push(item);
             }
+
+            // Guardar en localStorage
+            localStorage.setItem('carrito', JSON.stringify(carrito));
 
             updateCartBadge();
             showNotification('¡Producto agregado al carrito!');
@@ -1027,24 +932,7 @@
         }
 
         function volver() {
-            if (confirm('¿Estás seguro de que quieres volver al catálogo?')) {
-                window.history.back();
-            }
-        }
-
-        function capturarOutfit() {
-            showNotification('¡Outfit capturado!');
-            
-            const originalContent = captureBtn.innerHTML;
-            captureBtn.innerHTML = '<i class="fas fa-check"></i>';
-            captureBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
-
-            setTimeout(function() {
-                captureBtn.innerHTML = originalContent;
-                captureBtn.style.background = '';
-            }, 2000);
-
-            console.log('Capturando outfit...');
+            window.location.href = 'catalogo.html';
         }
 
         function updateCartBadge() {
@@ -1097,10 +985,6 @@
                     <div class="cart-item-info">
                         <div class="cart-item-name">${item.name}</div>
                         <div class="cart-item-price">${precioFormateado}</div>
-                        <div style="margin-bottom: 10px;">
-                            <small style="color: var(--coffee);">Color: </small>
-                            <span style="display: inline-block; width: 15px; height: 15px; background: ${item.color}; border-radius: 50%; border: 1px solid #ccc; vertical-align: middle;"></span>
-                        </div>
                         ${item.feedback ? `<div style="margin-bottom: 10px;"><small style="color: var(--coffee);">Feedback: ${item.feedback === 'like' ? '👍' : '👎'}</small></div>` : ''}
                         <div class="cart-item-controls">
                             <div class="quantity-controls">
@@ -1143,6 +1027,7 @@
             if (item.quantity <= 0) {
                 eliminarDelCarrito(id);
             } else {
+                localStorage.setItem('carrito', JSON.stringify(carrito));
                 updateCartBadge();
                 renderCart();
             }
@@ -1152,6 +1037,7 @@
             carrito = carrito.filter(function(item) {
                 return item.id !== id;
             });
+            localStorage.setItem('carrito', JSON.stringify(carrito));
             updateCartBadge();
             renderCart();
         }
@@ -1177,6 +1063,7 @@
 
             // Limpiar carrito
             carrito = [];
+            localStorage.setItem('carrito', JSON.stringify(carrito));
             updateCartBadge();
             renderCart();
             closeCart();
@@ -1197,9 +1084,40 @@
             showNotification(message);
         }
 
-        // Efecto de scroll para el header
+        // Cargar producto seleccionado del localStorage
+        function loadSelectedProductFromStorage() {
+            const prendaData = localStorage.getItem('prendaSeleccionada');
+            if (prendaData) {
+                selectedProduct = JSON.parse(prendaData);
+                console.log('Producto cargado desde localStorage:', selectedProduct);
+                
+                // Actualizar la información del producto en la UI
+                document.getElementById('productName').textContent = selectedProduct.nombre;
+                
+                const precioFormateado = new Intl.NumberFormat('es-CO', {
+                    style: 'currency',
+                    currency: 'COP',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(selectedProduct.precio);
+                
+                document.getElementById('productPrice').textContent = precioFormateado;
+                document.getElementById('productInfo').style.display = 'block';
+                
+                // Limpiar localStorage después de usar
+                localStorage.removeItem('prendaSeleccionada');
+            }
+        }
+
+        // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
-            // Efecto de scroll para el header y cambio de logo
+            // Cargar producto seleccionado
+            loadSelectedProductFromStorage();
+            
+            // Actualizar badge del carrito
+            updateCartBadge();
+            
+            // Efecto de scroll para el header
             window.addEventListener('scroll', function() {
                 const header = document.querySelector('header');
                 const scrolled = window.pageYOffset;
@@ -1221,6 +1139,8 @@
             });
         });
     </script>
+    
+    <!-- Cargar el módulo TypeScript -->
     <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

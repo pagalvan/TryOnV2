@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -658,6 +658,11 @@
             font-weight: 500;
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
             .btn::before {
@@ -703,6 +708,23 @@
 
             .btn-agregar i {
                 margin-right: 8px;
+            }
+
+        /* NUEVO - Estilo especial para botón probar */
+        .btn-probar {
+            background: var(--gradient-secondary);
+            color: white;
+            border-color: var(--tan);
+        }
+
+            .btn-probar::before {
+                background: var(--gradient-primary);
+            }
+
+            .btn-probar:hover {
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 12px 30px var(--shadow);
+                border-color: var(--caput-mortuum);
             }
 
         /* Efectos de entrada */
@@ -947,6 +969,18 @@
             }, 2000);
         }
 
+        // NUEVA FUNCIÓN - Ir al probador virtual
+        function irAlProbador(id) {
+            // Guardar información del producto en localStorage para pasarla al probador
+            const prenda = prendasOriginal.find(p => p.id === id);
+            if (prenda) {
+                localStorage.setItem('prendaSeleccionada', JSON.stringify(prenda));
+            }
+            
+            // Navegar al probador
+            window.location.href = 'probador.html';
+        }
+
         function eliminarDelCarrito(id) {
             carrito = carrito.filter(item => item.id !== id);
             updateCartBadge();
@@ -1128,7 +1162,7 @@
                                             <button class="btn btn-agregar" onclick="agregarAlCarrito(${prenda.id})">
                                                 <i class="fas fa-plus"></i> Agregar
                                             </button>
-                                            <button class="btn">
+                                            <button class="btn btn-probar" onclick="irAlProbador(${prenda.id})">
                                                 <i class="fas fa-camera"></i> Probar
                                             </button>
                                         </div>

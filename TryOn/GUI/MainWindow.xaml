@@ -15,8 +15,8 @@
             <DockPanel>
                 <!-- Encabezado del menú -->
                 <StackPanel DockPanel.Dock="Top" Margin="20,30,20,30">
-                    <TextBlock Text="TryOn" FontSize="28" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock x:Name="txtUsuarioNombre" Text="Bienvenido, Usuario" FontSize="14" Foreground="White" Opacity="0.8" Margin="0,5,0,0"/>
+                    <Image Source="/Resources/logo.png" Stretch="Fill" Height="113" Width="110"/>
+                    <TextBlock x:Name="txtUsuarioNombre" Text="Bienvenido, Usuario" FontSize="14" Foreground="White" Opacity="0.8" Margin="0,5,0,0" Width="183"/>
                 </StackPanel>
 
                 <!-- Opciones del menú -->
@@ -57,12 +57,7 @@
             <Border Grid.Row="0" Background="White" BorderBrush="#EEEEEE" BorderThickness="0,0,0,1" Padding="20,15">
                 <Grid>
                     <TextBlock x:Name="txtTituloPagina" Text="Panel Principal" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBox Width="200" Margin="0,0,10,0" Padding="10,5" VerticalContentAlignment="Center" 
-                                 BorderBrush="#DDDDDD" BorderThickness="1" VerticalAlignment="Center"
-                                 Text="Buscar..." />
-                        <Button Content="Buscar" Padding="15,5" VerticalAlignment="Center"/>
-                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"/>
                 </Grid>
             </Border>
 

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "esnext",
+    "lib": [ "es2020", "dom", "dom.iterable" ],
+    "moduleResolution": "node",
+    "outDir": "wwwroot/js",
+    "rootDir": "src",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": [ "src/**/*" ]
+}
