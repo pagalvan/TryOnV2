@@ -974,7 +974,26 @@
             // Guardar información del producto en localStorage para pasarla al probador
             const prenda = prendasOriginal.find(p => p.id === id);
             if (prenda) {
+                // Asegurar que la categoría esté correctamente definida
+                if (!prenda.categoria && prenda.nombre) {
+                    // Intentar inferir la categoría desde el nombre si no está definida
+                    if (prenda.nombre.toLowerCase().includes('camiseta') || 
+                        prenda.nombre.toLowerCase().includes('t-shirt') || 
+                        prenda.nombre.toLowerCase().includes('blusa')) {
+                        prenda.categoria = { nombre: "Camisetas" };
+                    } else if (prenda.nombre.toLowerCase().includes('vestido') || 
+                               prenda.nombre.toLowerCase().includes('dress')) {
+                        prenda.categoria = { nombre: "Vestidos" };
+                    } else if (prenda.nombre.toLowerCase().includes('uniforme')) {
+                        prenda.categoria = { nombre: "Uniformes" };
+                    } else if (prenda.nombre.toLowerCase().includes('pantalon') || 
+                               prenda.nombre.toLowerCase().includes('jean')) {
+                        prenda.categoria = { nombre: "Pantalones" };
+                    }
+                }
+                
                 localStorage.setItem('prendaSeleccionada', JSON.stringify(prenda));
+                console.log('Guardando prenda para probador:', prenda);
             }
             
             // Navegar al probador

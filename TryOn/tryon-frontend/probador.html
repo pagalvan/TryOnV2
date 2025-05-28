@@ -720,6 +720,34 @@
         .controls {
             animation-delay: 0.2s;
         }
+
+#debugToggle {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 1999;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    opacity: 0.1; /* Hacerlo casi invisible */
+    transform: scale(0.8);
+}
+
+#debugToggle:hover {
+    opacity: 1;
+    transform: scale(1);
+}
+
+#debugPanel {
+    transform: translateX(-120%); /* Asegurar que esté completamente oculto por defecto */
+}
     </style>
 </head>
 <body>
@@ -824,7 +852,7 @@
         padding: 20px;
         border-radius: 15px;
         max-width: 300px;
-        transform: translateX(-100%);
+        transform: translateX(-120%);
         transition: transform 0.3s ease;
         z-index: 2000;
         font-family: monospace;
@@ -908,6 +936,8 @@
         z-index: 1999;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         transition: all 0.3s ease;
+        opacity: 0.1; /* Hacerlo casi invisible */
+        transform: scale(0.8);
     ">🔧</button>
 
     <style>
@@ -1204,30 +1234,30 @@
             showNotification(message);
         }
 
-        // Cargar producto seleccionado del localStorage
-        function loadSelectedProductFromStorage() {
-            const prendaData = localStorage.getItem('prendaSeleccionada');
-            if (prendaData) {
-                selectedProduct = JSON.parse(prendaData);
-                console.log('Producto cargado desde localStorage:', selectedProduct);
-                
-                // Actualizar la información del producto en la UI
-                document.getElementById('productName').textContent = selectedProduct.nombre;
-                
-                const precioFormateado = new Intl.NumberFormat('es-CO', {
-                    style: 'currency',
-                    currency: 'COP',
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0
-                }).format(selectedProduct.precio);
-                
-                document.getElementById('productPrice').textContent = precioFormateado;
-                document.getElementById('productInfo').style.display = 'block';
-                
-                // Limpiar localStorage después de usar
-                localStorage.removeItem('prendaSeleccionada');
-            }
-        }
+// Modificar la función loadSelectedProductFromStorage para que detecte la categoría
+function loadSelectedProductFromStorage() {
+    const prendaData = localStorage.getItem('prendaSeleccionada');
+    if (prendaData) {
+        selectedProduct = JSON.parse(prendaData);
+        console.log('Producto cargado desde localStorage:', selectedProduct);
+        
+        // Actualizar la información del producto en la UI
+        document.getElementById('productName').textContent = selectedProduct.nombre;
+        
+        const precioFormateado = new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(selectedProduct.precio);
+        
+        document.getElementById('productPrice').textContent = precioFormateado;
+        document.getElementById('productInfo').style.display = 'block';
+        
+        // No eliminar el localStorage aquí para que main.ts pueda acceder a él
+        // La limpieza se hará en main.ts después de aplicar el lente
+    }
+}
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
