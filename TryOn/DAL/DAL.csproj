@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDatos.cs" />
+    <Compile Include="CategoriaRepository.cs" />
     <Compile Include="InventarioRepository.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="PedidoRepository.cs" />

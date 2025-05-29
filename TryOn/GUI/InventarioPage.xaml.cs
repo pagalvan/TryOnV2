@@ -6,21 +6,23 @@ using System.Windows;
 using System.Windows.Controls;
 using TryOn.BLL;
 
-
 namespace GUI
 {
     public partial class InventarioPage : Page
     {
         private readonly PrendaService _prendaService;
         private readonly InventarioService _inventarioService;
+        private readonly CategoryService _categoryService;
         private List<Prenda> _prendas;
         private List<Inventario> _inventarios;
+        private List<Categoria> _categorias;
 
         public InventarioPage()
         {
             InitializeComponent();
             _prendaService = new PrendaService();
             _inventarioService = new InventarioService();
+            _categoryService = new CategoryService();
 
             CargarDatos();
         }
@@ -36,6 +38,9 @@ namespace GUI
                 // Cargar inventario
                 _inventarios = _inventarioService.GetAll().ToList();
                 dgInventario.ItemsSource = _inventarios;
+
+                // Cargar categorías desde el servicio
+                _categorias = _categoryService.GetAll().ToList();
 
                 // Cargar combos
                 CargarCombos();
@@ -54,12 +59,15 @@ namespace GUI
             cmbPrenda.SelectedValuePath = "Id";
             cmbPrenda.SelectedIndex = -1;
 
-            // Cargar combo de categorías (obtener categorías únicas de las prendas)
-            var categorias = _prendas.Select(p => p.Categoria).Where(c => c != null).GroupBy(c => c.Id).Select(g => g.First()).ToList();
-            cmbCategoria.ItemsSource = categorias;
+            // Cargar combo de categorías desde el servicio
+            var categoriasCombo = new List<Categoria>();
+            categoriasCombo.Add(new Categoria { Id = 0, Nombre = "Todas las categorías" });
+            categoriasCombo.AddRange(_categorias);
+
+            cmbCategoria.ItemsSource = categoriasCombo;
             cmbCategoria.DisplayMemberPath = "Nombre";
             cmbCategoria.SelectedValuePath = "Id";
-            cmbCategoria.SelectedIndex = -1;
+            cmbCategoria.SelectedIndex = 0; // Seleccionar "Todas las categorías"
 
             // Seleccionar "Todas" en combo de tallas
             cmbTalla.SelectedIndex = 0;
@@ -195,8 +203,11 @@ namespace GUI
                 // Filtrar por categoría
                 if (cmbCategoria.SelectedItem != null)
                 {
-                    int categoriaId = ((Categoria)cmbCategoria.SelectedItem).Id;
-                    prendas = prendas.Where(p => p.CategoriaId == categoriaId).ToList();
+                    var categoriaSeleccionada = (Categoria)cmbCategoria.SelectedItem;
+                    if (categoriaSeleccionada.Id > 0) // No es "Todas las categorías"
+                    {
+                        prendas = prendas.Where(p => p.CategoriaId == categoriaSeleccionada.Id).ToList();
+                    }
                 }
 
                 // Filtrar por texto de búsqueda

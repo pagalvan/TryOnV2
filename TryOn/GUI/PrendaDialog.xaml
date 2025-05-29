@@ -27,7 +27,16 @@
                 <TextBox x:Name="txtDescripcion" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
 
                 <TextBlock Text="Categoría" Margin="0,0,0,5"/>
-                <ComboBox x:Name="cmbCategoria" Margin="0,0,0,15"/>
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="txtCategoria" Grid.Column="0" Margin="0,0,5,0" 
+                             ToolTip="Escriba el nombre de la categoría. Si no existe, se creará automáticamente."/>
+                    <Button x:Name="btnSugerirCategoria" Grid.Column="1" Content="..." Width="30" 
+                            Click="btnSugerirCategoria_Click" ToolTip="Ver categorías existentes"/>
+                </Grid>
 
                 <TextBlock Text="Precio de Venta" Margin="0,0,0,5"/>
                 <TextBox x:Name="txtPrecioVenta" Margin="0,0,0,15"/>

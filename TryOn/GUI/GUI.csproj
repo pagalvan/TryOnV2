@@ -77,6 +77,9 @@
     <Compile Include="CatalogoPage.xaml.cs">
       <DependentUpon>CatalogoPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CategorySuggestionDialog.xaml.cs">
+      <DependentUpon>CategorySuggestionDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters.cs" />
     <Compile Include="EnviarPromocionDialog.xaml.cs">
       <DependentUpon>EnviarPromocionDialog.xaml</DependentUpon>
@@ -105,8 +108,8 @@
     <Compile Include="UsuariosPage.xaml.cs">
       <DependentUpon>UsuariosPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VentasPage.xaml.cs">
-      <DependentUpon>VentasPage.xaml</DependentUpon>
+    <Compile Include="PedidosPage.xaml.cs">
+      <DependentUpon>PedidosPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +165,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CategorySuggestionDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="EnviarPromocionDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -202,7 +209,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="VentasPage.xaml">
+    <Page Include="PedidosPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

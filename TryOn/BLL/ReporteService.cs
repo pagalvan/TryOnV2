@@ -19,9 +19,9 @@ namespace TryOn.BLL
             _inventarioRepository = new InventarioRepository();
         }
 
-        #region Productos Más Vendidos
+        #region Productos Más Pedidos
 
-        public List<ProductoVendidoDTO> ObtenerProductosMasVendidos(DateTime fechaInicio)
+        public List<ProductoPedidoDTO> ObtenerProductosMasPedidos(DateTime fechaInicio)
         {
             try
             {
@@ -30,14 +30,14 @@ namespace TryOn.BLL
 
                 if (!pedidos.Any() || pedidos.All(p => p.Detalles == null || !p.Detalles.Any()))
                 {
-                    return new List<ProductoVendidoDTO>();
+                    return new List<ProductoPedidoDTO>();
                 }
 
                 // Obtener todas las prendas para evitar múltiples consultas a la base de datos
                 var prendas = _prendaRepository.GetAll().ToList();
 
                 // Agrupar por prenda y calcular totales
-                var productosMasVendidos = pedidos
+                var productosMasPedidos = pedidos
                     .Where(p => p.Detalles != null && p.Detalles.Any())
                     .SelectMany(p => p.Detalles)
                     .Where(d => d.Inventario != null && d.Inventario.PrendaId > 0)
@@ -45,24 +45,24 @@ namespace TryOn.BLL
                     .Select(g => new
                     {
                         PrendaId = g.Key,
-                        CantidadVendida = g.Sum(d => d.Cantidad),
-                        TotalVentas = g.Sum(d => d.Subtotal)
+                        CantidadPedida = g.Sum(d => d.Cantidad),
+                        TotalPosiblesGanancias = g.Sum(d => d.Subtotal)
                     })
-                    .OrderByDescending(x => x.CantidadVendida)
+                    .OrderByDescending(x => x.CantidadPedida)
                     .Take(10)
                     .ToList();
 
                 // Mapear a DTO con información completa
-                var resultado = productosMasVendidos.Select(p =>
+                var resultado = productosMasPedidos.Select(p =>
                 {
                     var prenda = prendas.FirstOrDefault(pr => pr.Id == p.PrendaId);
-                    return new ProductoVendidoDTO
+                    return new ProductoPedidoDTO
                     {
                         PrendaId = p.PrendaId,
                         Nombre = prenda?.Nombre ?? "Desconocido",
                         Categoria = prenda?.Categoria?.Nombre ?? "Desconocida",
-                        CantidadVendida = p.CantidadVendida,
-                        TotalVentas = p.TotalVentas
+                        CantidadPedida = p.CantidadPedida,
+                        TotalPosiblesGanancias = p.TotalPosiblesGanancias
                     };
                 }).ToList();
 
@@ -70,15 +70,15 @@ namespace TryOn.BLL
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error al obtener productos más vendidos: {ex.Message}", ex);
+                throw new Exception($"Error al obtener productos más pedidos: {ex.Message}", ex);
             }
         }
 
         #endregion
 
-        #region Ventas Por Período
+        #region Posibles Ganancias Por Período
 
-        public List<VentaPorPeriodoDTO> ObtenerVentasPorPeriodo(DateTime fechaDesde, DateTime fechaHasta)
+        public List<PosibleGananciaPorPeriodoDTO> ObtenerPosiblesGananciasPorPeriodo(DateTime fechaDesde, DateTime fechaHasta)
         {
             try
             {
@@ -92,30 +92,30 @@ namespace TryOn.BLL
 
                 if (!pedidos.Any())
                 {
-                    return new List<VentaPorPeriodoDTO>();
+                    return new List<PosibleGananciaPorPeriodoDTO>();
                 }
 
                 // Agrupar por fecha y calcular totales
-                var ventasPorFecha = pedidos
+                var posiblesGananciasPorFecha = pedidos
                     .GroupBy(p => p.FechaPedido.Date)
-                    .Select(g => new VentaPorPeriodoDTO
+                    .Select(g => new PosibleGananciaPorPeriodoDTO
                     {
                         Fecha = g.Key,
                         CantidadPedidos = g.Count(),
-                        TotalVentas = g.Sum(p => p.Total)
+                        TotalPosiblesGanancias = g.Sum(p => p.Total)
                     })
                     .OrderBy(x => x.Fecha)
                     .ToList();
 
-                return ventasPorFecha;
+                return posiblesGananciasPorFecha;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error al obtener ventas por período: {ex.Message}", ex);
+                throw new Exception($"Error al obtener posibles ganancias por período: {ex.Message}", ex);
             }
         }
 
-        public ResumenVentasDTO ObtenerResumenVentas(DateTime fechaDesde, DateTime fechaHasta)
+        public ResumenPosiblesGananciasDTO ObtenerResumenPosiblesGanancias(DateTime fechaDesde, DateTime fechaHasta)
         {
             try
             {
@@ -129,24 +129,24 @@ namespace TryOn.BLL
 
                 if (!pedidos.Any())
                 {
-                    return new ResumenVentasDTO();
+                    return new ResumenPosiblesGananciasDTO();
                 }
 
                 // Calcular totales
-                decimal totalVentas = pedidos.Sum(p => p.Total);
+                decimal totalPosiblesGanancias = pedidos.Sum(p => p.Total);
                 int totalPedidos = pedidos.Count;
-                decimal promedioPedido = totalPedidos > 0 ? totalVentas / totalPedidos : 0;
+                decimal promedioPedido = totalPedidos > 0 ? totalPosiblesGanancias / totalPedidos : 0;
 
-                return new ResumenVentasDTO
+                return new ResumenPosiblesGananciasDTO
                 {
-                    TotalVentas = totalVentas,
+                    TotalPosiblesGanancias = totalPosiblesGanancias,
                     TotalPedidos = totalPedidos,
                     PromedioPedido = promedioPedido
                 };
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error al obtener resumen de ventas: {ex.Message}", ex);
+                throw new Exception($"Error al obtener resumen de posibles ganancias: {ex.Message}", ex);
             }
         }
 
@@ -212,9 +212,9 @@ namespace TryOn.BLL
 
         #endregion
 
-        #region Ventas Por Categoría
+        #region Posibles Ganancias Por Categoría
 
-        public List<VentaPorCategoriaDTO> ObtenerVentasPorCategoria(DateTime fechaInicio)
+        public List<PosibleGananciaPorCategoriaDTO> ObtenerPosiblesGananciasPorCategoria(DateTime fechaInicio)
         {
             try
             {
@@ -226,11 +226,11 @@ namespace TryOn.BLL
 
                 if (!pedidos.Any() || !prendas.Any())
                 {
-                    return new List<VentaPorCategoriaDTO>();
+                    return new List<PosibleGananciaPorCategoriaDTO>();
                 }
 
-                // Obtener ventas por prenda
-                var ventasPorPrenda = pedidos
+                // Obtener pedidos por prenda
+                var pedidosPorPrenda = pedidos
                     .Where(p => p.Detalles != null && p.Detalles.Any())
                     .SelectMany(p => p.Detalles)
                     .Where(d => d.Inventario != null && d.Inventario.PrendaId > 0)
@@ -238,8 +238,8 @@ namespace TryOn.BLL
                     .Select(g => new
                     {
                         PrendaId = g.Key,
-                        CantidadVendida = g.Sum(d => d.Cantidad),
-                        TotalVentas = g.Sum(d => d.Subtotal)
+                        CantidadPedida = g.Sum(d => d.Cantidad),
+                        TotalPosiblesGanancias = g.Sum(d => d.Subtotal)
                     })
                     .ToList();
 
@@ -254,56 +254,56 @@ namespace TryOn.BLL
                 // Si no hay categorías, retornar lista vacía
                 if (!categorias.Any())
                 {
-                    return new List<VentaPorCategoriaDTO>();
+                    return new List<PosibleGananciaPorCategoriaDTO>();
                 }
 
-                // Agrupar ventas por categoría
-                var resultado = new List<VentaPorCategoriaDTO>();
+                // Agrupar pedidos por categoría
+                var resultado = new List<PosibleGananciaPorCategoriaDTO>();
 
                 foreach (var categoria in categorias)
                 {
                     // Obtener todas las prendas de esta categoría
                     var prendasCategoria = prendas.Where(p => p.CategoriaId == categoria.Id).ToList();
 
-                    // Calcular ventas totales para esta categoría
-                    int cantidadVendida = 0;
-                    decimal totalVentas = 0;
+                    // Calcular posibles ganancias totales para esta categoría
+                    int cantidadPedida = 0;
+                    decimal totalPosiblesGanancias = 0;
 
                     foreach (var prenda in prendasCategoria)
                     {
-                        var ventaPrenda = ventasPorPrenda.FirstOrDefault(v => v.PrendaId == prenda.Id);
-                        if (ventaPrenda != null)
+                        var pedidoPrenda = pedidosPorPrenda.FirstOrDefault(v => v.PrendaId == prenda.Id);
+                        if (pedidoPrenda != null)
                         {
-                            cantidadVendida += ventaPrenda.CantidadVendida;
-                            totalVentas += ventaPrenda.TotalVentas;
+                            cantidadPedida += pedidoPrenda.CantidadPedida;
+                            totalPosiblesGanancias += pedidoPrenda.TotalPosiblesGanancias;
                         }
                     }
 
-                    // Solo agregar categorías con ventas
-                    if (cantidadVendida > 0)
+                    // Solo agregar categorías con pedidos
+                    if (cantidadPedida > 0)
                     {
-                        resultado.Add(new VentaPorCategoriaDTO
+                        resultado.Add(new PosibleGananciaPorCategoriaDTO
                         {
                             CategoriaId = categoria.Id,
                             Nombre = categoria.Nombre,
                             CantidadProductos = prendasCategoria.Count,
-                            CantidadVendida = cantidadVendida,
-                            TotalVentas = totalVentas
+                            CantidadPedida = cantidadPedida,
+                            TotalPosiblesGanancias = totalPosiblesGanancias
                         });
                     }
                 }
 
-                // Ordenar por total de ventas
-                return resultado.OrderByDescending(c => c.TotalVentas).ToList();
+                // Ordenar por total de posibles ganancias
+                return resultado.OrderByDescending(c => c.TotalPosiblesGanancias).ToList();
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error al obtener ventas por categoría: {ex.Message}", ex);
+                throw new Exception($"Error al obtener posibles ganancias por categoría: {ex.Message}", ex);
             }
         }
 
         // Método alternativo que obtiene información más detallada sobre cada categoría
-        public List<CategoriaVentaDTO> ObtenerVentasDetalladoPorCategoria(DateTime fechaInicio)
+        public List<CategoriaPosibleGananciaDTO> ObtenerPosiblesGananciasDetalladoPorCategoria(DateTime fechaInicio)
         {
             try
             {
@@ -315,22 +315,22 @@ namespace TryOn.BLL
 
                 if (!pedidos.Any() || !prendas.Any())
                 {
-                    return new List<CategoriaVentaDTO>();
+                    return new List<CategoriaPosibleGananciaDTO>();
                 }
 
-                // Obtener ventas por prenda
-                var ventasPorPrenda = pedidos
+                // Obtener pedidos por prenda
+                var pedidosPorPrenda = pedidos
                     .Where(p => p.Detalles != null && p.Detalles.Any())
                     .SelectMany(p => p.Detalles)
                     .Where(d => d.Inventario != null && d.Inventario.PrendaId > 0)
                     .GroupBy(d => d.Inventario.PrendaId)
                     .ToDictionary(
                         g => g.Key,
-                        g => new PrendaVentaDTO
+                        g => new PrendaPedidoDTO
                         {
                             Id = g.Key,
-                            CantidadVendida = g.Sum(d => d.Cantidad),
-                            TotalVentas = g.Sum(d => d.Subtotal)
+                            CantidadPedida = g.Sum(d => d.Cantidad),
+                            TotalPosiblesGanancias = g.Sum(d => d.Subtotal)
                         }
                     );
 
@@ -352,7 +352,7 @@ namespace TryOn.BLL
                     .ToList();
 
                 // Crear el resultado final
-                var resultado = new List<CategoriaVentaDTO>();
+                var resultado = new List<CategoriaPosibleGananciaDTO>();
 
                 foreach (var categoria in categorias)
                 {
@@ -360,37 +360,37 @@ namespace TryOn.BLL
                     if (!prendasPorCategoria.ContainsKey(categoria.Id))
                         continue;
 
-                    var categoriaDTO = new CategoriaVentaDTO
+                    var categoriaDTO = new CategoriaPosibleGananciaDTO
                     {
                         Id = categoria.Id,
                         Nombre = categoria.Nombre,
                         TotalProductos = prendasPorCategoria[categoria.Id].Count
                     };
 
-                    // Agregar las ventas de cada prenda en esta categoría
+                    // Agregar los pedidos de cada prenda en esta categoría
                     foreach (var prenda in prendasPorCategoria[categoria.Id])
                     {
-                        if (ventasPorPrenda.ContainsKey(prenda.Id))
+                        if (pedidosPorPrenda.ContainsKey(prenda.Id))
                         {
-                            var ventaPrenda = ventasPorPrenda[prenda.Id];
-                            ventaPrenda.Nombre = prenda.Nombre; // Asignar el nombre de la prenda
-                            categoriaDTO.Prendas.Add(ventaPrenda);
+                            var pedidoPrenda = pedidosPorPrenda[prenda.Id];
+                            pedidoPrenda.Nombre = prenda.Nombre; // Asignar el nombre de la prenda
+                            categoriaDTO.Prendas.Add(pedidoPrenda);
                         }
                     }
 
-                    // Solo agregar categorías con ventas
+                    // Solo agregar categorías con pedidos
                     if (categoriaDTO.Prendas.Any())
                     {
                         resultado.Add(categoriaDTO);
                     }
                 }
 
-                // Ordenar por total de ventas
-                return resultado.OrderByDescending(c => c.TotalVentas).ToList();
+                // Ordenar por total de posibles ganancias
+                return resultado.OrderByDescending(c => c.TotalPosiblesGanancias).ToList();
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error al obtener ventas detalladas por categoría: {ex.Message}", ex);
+                throw new Exception($"Error al obtener posibles ganancias detalladas por categoría: {ex.Message}", ex);
             }
         }
 

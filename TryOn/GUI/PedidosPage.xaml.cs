@@ -8,13 +8,13 @@ using TryOn.BLL;
 
 namespace GUI
 {
-    public partial class VentasPage : Page
+    public partial class PedidosPage : Page
     {
         private readonly PedidoService _pedidoService;
         private readonly Usuario _usuarioActual;
         private List<Pedido> _pedidos;
 
-        public VentasPage(Usuario usuario)
+        public PedidosPage(Usuario usuario)
         {
             InitializeComponent();
             _pedidoService = new PedidoService();
@@ -23,7 +23,20 @@ namespace GUI
             // Seleccionar "Todos" en combo de estados
             cmbEstado.SelectedIndex = 0;
 
+            // Configurar visibilidad según tipo de usuario
+            ConfigurarVisibilidadSegunUsuario();
+
             CargarDatos();
+        }
+
+        private void ConfigurarVisibilidadSegunUsuario()
+        {
+            // Si no es administrador, ocultar columna de cliente y información de cliente
+            if (!_usuarioActual.EsAdmin)
+            {
+                colCliente.Visibility = Visibility.Collapsed;
+                txtClienteInfo.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void CargarDatos()
@@ -158,5 +171,8 @@ namespace GUI
             // Mostrar detalles del pedido
             dgDetallesPedido.ItemsSource = pedido.Detalles;
         }
+
+        // Propiedad para binding de visibilidad del botón cambiar estado
+        public bool EsAdmin => _usuarioActual.EsAdmin;
     }
 }

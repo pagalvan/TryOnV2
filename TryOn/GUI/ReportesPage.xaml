@@ -1,7 +1,6 @@
 ﻿<Page x:Class="GUI.ReportesPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
       xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
       Title="Reportes">
     <Grid>
@@ -20,10 +19,10 @@
             <StackPanel Grid.Column="0">
                 <TextBlock Text="Seleccione un reporte:" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
                 <ComboBox x:Name="cmbTipoReporte" SelectionChanged="cmbTipoReporte_SelectionChanged">
-                    <ComboBoxItem Content="Productos más vendidos"/>
-                    <ComboBoxItem Content="Ventas por período"/>
+                    <ComboBoxItem Content="Productos más Pedidos"/>
+                    <ComboBoxItem Content="Posibles Ganancias por período"/>
                     <ComboBoxItem Content="Inventario bajo stock"/>
-                    <ComboBoxItem Content="Ventas por categoría"/>
+                    <ComboBoxItem Content="Posibles Ganancias por categoría"/>
                 </ComboBox>
             </StackPanel>
 
@@ -33,8 +32,8 @@
 
         <!-- Contenido del reporte -->
         <TabControl Grid.Row="1" x:Name="tabReportes">
-            <!-- Productos más vendidos -->
-            <TabItem Header="Productos más vendidos" Visibility="Collapsed">
+            <!-- Productos más pedidos -->
+            <TabItem Header="Productos más pedidos" Visibility="Collapsed">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -61,7 +60,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Dashboard de productos más vendidos -->
+                        <!-- Dashboard de productos más pedidos -->
                         <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="1" Margin="0,0,0,10" Background="#F9F9F9">
                             <Grid Margin="10">
                                 <Grid.ColumnDefinitions>
@@ -69,18 +68,18 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Gráfico de barras para productos más vendidos -->
-                                <lvc:CartesianChart Grid.Column="0" Series="{Binding ProductosVendidosSeries}" LegendLocation="Right">
+                                <!-- Gráfico de barras para productos más pedidos -->
+                                <lvc:CartesianChart Grid.Column="0" Series="{Binding ProductosPedidosSeries}" LegendLocation="Right">
                                     <lvc:CartesianChart.AxisX>
-                                        <lvc:Axis Title="Productos" Labels="{Binding ProductosVendidosLabels}" />
+                                        <lvc:Axis Title="Productos" Labels="{Binding ProductosPedidosLabels}" />
                                     </lvc:CartesianChart.AxisX>
                                     <lvc:CartesianChart.AxisY>
-                                        <lvc:Axis Title="Cantidad Vendida" />
+                                        <lvc:Axis Title="Cantidad Pedida" />
                                     </lvc:CartesianChart.AxisY>
                                 </lvc:CartesianChart>
 
-                                <!-- Gráfico de pastel para distribución de ventas -->
-                                <lvc:PieChart Grid.Column="1" Series="{Binding ProductosVendidosPieSeries}" LegendLocation="Bottom" InnerRadius="0" Margin="0,0,20,0">
+                                <!-- Gráfico de pastel para distribución de posibles ganancias -->
+                                <lvc:PieChart Grid.Column="1" Series="{Binding ProductosPedidosPieSeries}" LegendLocation="Bottom" InnerRadius="0" Margin="0,0,20,0">
                                     <lvc:PieChart.ChartLegend>
                                         <lvc:DefaultLegend BulletSize="15" />
                                     </lvc:PieChart.ChartLegend>
@@ -88,21 +87,21 @@
                             </Grid>
                         </Border>
 
-                        <!-- DataGrid de productos más vendidos -->
-                        <DataGrid x:Name="dgProductosMasVendidos" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                        <!-- DataGrid de productos más pedidos -->
+                        <DataGrid x:Name="dgProductosMasPedidos" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Producto" Binding="{Binding Nombre}" Width="200"/>
                                 <DataGridTextColumn Header="Categoría" Binding="{Binding Categoria}" Width="150"/>
-                                <DataGridTextColumn Header="Cantidad Vendida" Binding="{Binding CantidadVendida}" Width="120"/>
-                                <DataGridTextColumn Header="Total Ventas" Binding="{Binding TotalVentas, StringFormat=C}" Width="120"/>
+                                <DataGridTextColumn Header="Cantidad Pedida" Binding="{Binding CantidadPedida}" Width="120"/>
+                                <DataGridTextColumn Header="Posibles Ganancias" Binding="{Binding TotalPosiblesGanancias, StringFormat=C}" Width="150"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
                 </Grid>
             </TabItem>
 
-            <!-- Ventas por período -->
-            <TabItem Header="Ventas por período" Visibility="Collapsed">
+            <!-- Posibles ganancias por período -->
+            <TabItem Header="Posibles ganancias por período" Visibility="Collapsed">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -117,7 +116,7 @@
                         <TextBlock Text="Hasta:" VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <DatePicker x:Name="dpFechaHasta" Width="120" Margin="0,0,20,0"/>
 
-                        <Button Content="Generar Reporte" Click="btnGenerarReporteVentas_Click"/>
+                        <Button Content="Generar Reporte" Click="btnGenerarReportePosiblesGanancias_Click"/>
                     </StackPanel>
 
                     <!-- Dashboard y DataGrid -->
@@ -127,7 +126,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Dashboard de ventas por período -->
+                        <!-- Dashboard de posibles ganancias por período -->
                         <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="1" Margin="0,0,0,10" Background="#F9F9F9">
                             <Grid Margin="10">
                                 <Grid.ColumnDefinitions>
@@ -135,13 +134,13 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Gráfico de línea para tendencia de ventas -->
-                                <lvc:CartesianChart Grid.Column="0" Series="{Binding VentasPorPeriodoSeries}" LegendLocation="Right">
+                                <!-- Gráfico de línea para tendencia de posibles ganancias -->
+                                <lvc:CartesianChart Grid.Column="0" Series="{Binding PosiblesGananciasPorPeriodoSeries}" LegendLocation="Right">
                                     <lvc:CartesianChart.AxisX>
-                                        <lvc:Axis Title="Fecha" Labels="{Binding VentasPorPeriodoLabels}" />
+                                        <lvc:Axis Title="Fecha" Labels="{Binding PosiblesGananciasPorPeriodoLabels}" />
                                     </lvc:CartesianChart.AxisX>
                                     <lvc:CartesianChart.AxisY>
-                                        <lvc:Axis Title="Total Ventas" LabelFormatter="{Binding VentasPorPeriodoYFormatter}" />
+                                        <lvc:Axis Title="Posibles Ganancias" LabelFormatter="{Binding PosiblesGananciasPorPeriodoYFormatter}" />
                                     </lvc:CartesianChart.AxisY>
                                 </lvc:CartesianChart>
 
@@ -153,11 +152,11 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <!-- Total de ventas -->
+                                    <!-- Total de posibles ganancias -->
                                     <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="1" Margin="0,0,0,5" CornerRadius="5" Background="#FFFFFF">
                                         <StackPanel Margin="10">
-                                            <TextBlock Text="Total de Ventas" FontWeight="SemiBold" Foreground="#555555"/>
-                                            <TextBlock x:Name="txtTotalVentas" Text="$0.00" FontSize="24" FontWeight="Bold" Foreground="#2E7D32"/>
+                                            <TextBlock Text="Posibles Ganancias Totales" FontWeight="SemiBold" Foreground="#555555"/>
+                                            <TextBlock x:Name="txtTotalPosiblesGanancias" Text="$0.00" FontSize="24" FontWeight="Bold" Foreground="#2E7D32"/>
                                         </StackPanel>
                                     </Border>
 
@@ -180,12 +179,12 @@
                             </Grid>
                         </Border>
 
-                        <!-- DataGrid de ventas por período -->
-                        <DataGrid x:Name="dgVentasPorPeriodo" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                        <!-- DataGrid de posibles ganancias por período -->
+                        <DataGrid x:Name="dgPosiblesGananciasPorPeriodo" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="100"/>
                                 <DataGridTextColumn Header="Cantidad de Pedidos" Binding="{Binding CantidadPedidos}" Width="150"/>
-                                <DataGridTextColumn Header="Total Ventas" Binding="{Binding TotalVentas, StringFormat=C}" Width="120"/>
+                                <DataGridTextColumn Header="Posibles Ganancias" Binding="{Binding TotalPosiblesGanancias, StringFormat=C}" Width="150"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -291,8 +290,8 @@
                 </Grid>
             </TabItem>
 
-            <!-- Ventas por categoría -->
-            <TabItem Header="Ventas por categoría" Visibility="Collapsed">
+            <!-- Posibles ganancias por categoría -->
+            <TabItem Header="Posibles ganancias por categoría" Visibility="Collapsed">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -319,7 +318,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Dashboard de ventas por categoría -->
+                        <!-- Dashboard de posibles ganancias por categoría -->
                         <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="1" Margin="0,0,0,10" Background="#F9F9F9">
                             <Grid Margin="10">
                                 <Grid.ColumnDefinitions>
@@ -327,7 +326,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Gráfico de pastel para distribución de ventas por categoría -->
+                                <!-- Gráfico de pastel para distribución de posibles ganancias por categoría -->
                                 <lvc:PieChart Grid.Column="0" Series="{Binding CategoriasPieSeries}" LegendLocation="Right" InnerRadius="0" Margin="0,0,10,0">
                                     <lvc:PieChart.ChartLegend>
                                         <lvc:DefaultLegend BulletSize="15" />
@@ -340,19 +339,19 @@
                                         <lvc:Axis Title="Categoría" Labels="{Binding CategoriasLabels}" />
                                     </lvc:CartesianChart.AxisX>
                                     <lvc:CartesianChart.AxisY>
-                                        <lvc:Axis Title="Total Ventas" LabelFormatter="{Binding CategoriasYFormatter}" />
+                                        <lvc:Axis Title="Posibles Ganancias" LabelFormatter="{Binding CategoriasYFormatter}" />
                                     </lvc:CartesianChart.AxisY>
                                 </lvc:CartesianChart>
                             </Grid>
                         </Border>
 
-                        <!-- DataGrid de ventas por categoría -->
-                        <DataGrid x:Name="dgVentasPorCategoria" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                        <!-- DataGrid de posibles ganancias por categoría -->
+                        <DataGrid x:Name="dgPosiblesGananciasPorCategoria" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Categoría" Binding="{Binding Nombre}" Width="200"/>
                                 <DataGridTextColumn Header="Cantidad de Productos" Binding="{Binding CantidadProductos}" Width="150"/>
-                                <DataGridTextColumn Header="Cantidad Vendida" Binding="{Binding CantidadVendida}" Width="120"/>
-                                <DataGridTextColumn Header="Total Ventas" Binding="{Binding TotalVentas, StringFormat=C}" Width="120"/>
+                                <DataGridTextColumn Header="Cantidad Pedida" Binding="{Binding CantidadPedida}" Width="120"/>
+                                <DataGridTextColumn Header="Posibles Ganancias" Binding="{Binding TotalPosiblesGanancias, StringFormat=C}" Width="150"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>

@@ -21,18 +21,23 @@
 
                 <!-- Opciones del menú -->
                 <StackPanel DockPanel.Dock="Top" Margin="0,20,0,0">
+                    <!-- Solo visible para administradores -->
                     <Button x:Name="btnInventario" Content="Gestión de Inventario" Margin="10,5" Background="Transparent" BorderThickness="0" 
                             HorizontalContentAlignment="Left" Padding="15,10" Foreground="White" Click="btnInventario_Click"/>
 
+                    <!-- Visible para todos los usuarios -->
                     <Button x:Name="btnCatalogo" Content="Catálogo de Productos" Margin="10,5" Background="Transparent" BorderThickness="0" 
                             HorizontalContentAlignment="Left" Padding="15,10" Foreground="White" Click="btnCatalogo_Click"/>
 
-                    <Button x:Name="btnVentas" Content="Ventas y Pedidos" Margin="10,5" Background="Transparent" BorderThickness="0" 
+                    <!-- Solo visible para administradores -->
+                    <Button x:Name="btnVentas" Content="Pedidos" Margin="10,5" Background="Transparent" BorderThickness="0" 
                             HorizontalContentAlignment="Left" Padding="15,10" Foreground="White" Click="btnVentas_Click"/>
 
+                    <!-- Solo visible para administradores -->
                     <Button x:Name="btnReportes" Content="Reportes" Margin="10,5" Background="Transparent" BorderThickness="0" 
                             HorizontalContentAlignment="Left" Padding="15,10" Foreground="White" Click="btnReportes_Click"/>
 
+                    <!-- Solo visible para administradores -->
                     <Button x:Name="btnUsuarios" Content="Gestión de Usuarios" Margin="10,5" Background="Transparent" BorderThickness="0" 
                             HorizontalContentAlignment="Left" Padding="15,10" Foreground="White" Click="btnUsuarios_Click"/>
                 </StackPanel>

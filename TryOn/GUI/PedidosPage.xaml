@@ -1,21 +1,25 @@
-﻿<Page x:Class="GUI.VentasPage"
+﻿<Page x:Class="GUI.PedidosPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Title="Ventas y Pedidos">
+      Title="Pedidos">
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Barra de herramientas -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
             <Button x:Name="btnNuevoPedido" Content="Nuevo Pedido" Margin="0,0,10,0" Click="btnNuevoPedido_Click"/>
             <Button x:Name="btnActualizarPedidos" Content="Actualizar" Margin="0,0,10,0" Click="btnActualizarPedidos_Click"/>
         </StackPanel>
 
         <!-- Tabla de pedidos -->
-        <TabControl Grid.Row="1">
+        <TabControl Grid.Row="2">
             <TabItem Header="Pedidos">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -45,7 +49,8 @@
                               SelectionMode="Single" SelectionChanged="dgPedidos_SelectionChanged">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
-                            <DataGridTextColumn Header="Cliente" Binding="{Binding Usuario.NombreCompleto}" Width="150"/>
+                            <!-- Columna Cliente - solo visible para administradores -->
+                            <DataGridTextColumn x:Name="colCliente" Header="Cliente" Binding="{Binding Usuario.NombreCompleto}" Width="150"/>
                             <DataGridTextColumn Header="Fecha" Binding="{Binding FechaPedido, StringFormat=dd/MM/yyyy HH:mm}" Width="150"/>
                             <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="100"/>
                             <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}" Width="100"/>
@@ -54,7 +59,14 @@
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <Button Content="Ver Detalles" Margin="0,0,5,0" Click="btnVerDetalles_Click" Tag="{Binding Id}"/>
-                                            <Button Content="Cambiar Estado" Click="btnCambiarEstado_Click" Tag="{Binding Id}"/>
+                                            <!-- Botón Cambiar Estado - solo visible para administradores -->
+                                            <Button x:Name="btnCambiarEstadoTemplate" 
+                                                    Content="Cambiar Estado" 
+                                                    Click="btnCambiarEstado_Click" 
+                                                    Tag="{Binding Id}"
+                                                    Visibility="{Binding DataContext.EsAdmin, 
+                                                                RelativeSource={RelativeSource AncestorType=Page}, 
+                                                                Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -66,13 +78,17 @@
 
             <TabItem Header="Detalles de Pedido">
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="17*"/>
+                        <ColumnDefinition Width="334*"/>
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
                     <!-- Información del pedido -->
-                    <Border Grid.Row="0" Background="#F5F5F5" Padding="15,10" Margin="0,0,0,10">
+                    <Border Grid.Row="0" Background="#F5F5F5" Padding="15,10" Margin="0,0,0,10" Grid.ColumnSpan="2">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -84,7 +100,8 @@
                                     <Run Text="Pedido #" FontWeight="SemiBold"/>
                                     <Run x:Name="txtPedidoId" Text=""/>
                                 </TextBlock>
-                                <TextBlock>
+                                <!-- Cliente info - solo visible para administradores -->
+                                <TextBlock x:Name="txtClienteInfo">
                                     <Run Text="Cliente: " FontWeight="SemiBold"/>
                                     <Run x:Name="txtPedidoCliente" Text=""/>
                                 </TextBlock>
@@ -112,7 +129,7 @@
                     </Border>
 
                     <!-- Detalles del pedido -->
-                    <DataGrid x:Name="dgDetallesPedido" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid x:Name="dgDetallesPedido" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" Grid.ColumnSpan="2">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Producto" Binding="{Binding Inventario.Prenda.Nombre}" Width="200"/>
                             <DataGridTextColumn Header="Talla" Binding="{Binding Inventario.Talla}" Width="80"/>

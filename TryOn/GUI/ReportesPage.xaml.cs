@@ -24,21 +24,21 @@ namespace GUI
 
         #region Propiedades de binding para LiveCharts
 
-        // Productos más vendidos
-        public SeriesCollection ProductosVendidosSeries { get; set; }
-        public List<string> ProductosVendidosLabels { get; set; }
-        public SeriesCollection ProductosVendidosPieSeries { get; set; }
+        // Productos más pedidos
+        public SeriesCollection ProductosPedidosSeries { get; set; }
+        public List<string> ProductosPedidosLabels { get; set; }
+        public SeriesCollection ProductosPedidosPieSeries { get; set; }
 
-        // Ventas por período
-        public SeriesCollection VentasPorPeriodoSeries { get; set; }
-        public List<string> VentasPorPeriodoLabels { get; set; }
-        public Func<double, string> VentasPorPeriodoYFormatter { get; set; }
+        // Posibles ganancias por período
+        public SeriesCollection PosiblesGananciasPorPeriodoSeries { get; set; }
+        public List<string> PosiblesGananciasPorPeriodoLabels { get; set; }
+        public Func<double, string> PosiblesGananciasPorPeriodoYFormatter { get; set; }
 
         // Inventario bajo stock
         public SeriesCollection InventarioStockSeries { get; set; }
         public List<string> InventarioStockLabels { get; set; }
 
-        // Ventas por categoría
+        // Posibles ganancias por categoría
         public SeriesCollection CategoriasPieSeries { get; set; }
         public SeriesCollection CategoriasSeries { get; set; }
         public List<string> CategoriasLabels { get; set; }
@@ -122,17 +122,17 @@ namespace GUI
                 // Generar reporte según el tipo seleccionado
                 switch (cmbTipoReporte.SelectedIndex)
                 {
-                    case 0: // Productos más vendidos
-                        GenerarReporteProductosMasVendidos();
+                    case 0: // Productos más pedidos
+                        GenerarReporteProductosMasPedidos();
                         break;
-                    case 1: // Ventas por período
-                        GenerarReporteVentasPorPeriodo();
+                    case 1: // Posibles ganancias por período
+                        GenerarReportePosiblesGananciasPorPeriodo();
                         break;
                     case 2: // Inventario bajo stock
                         GenerarReporteInventarioBajoStock();
                         break;
-                    case 3: // Ventas por categoría
-                        GenerarReporteVentasPorCategoria();
+                    case 3: // Posibles ganancias por categoría
+                        GenerarReportePosiblesGananciasPorCategoria();
                         break;
                 }
             }
@@ -147,44 +147,44 @@ namespace GUI
             if (!_datosInicializados || cmbPeriodoProductos.SelectedIndex < 0)
                 return;
 
-            GenerarReporteProductosMasVendidos();
+            GenerarReporteProductosMasPedidos();
         }
 
         private void btnGenerarReporteProductos_Click(object sender, RoutedEventArgs e)
         {
-            GenerarReporteProductosMasVendidos();
+            GenerarReporteProductosMasPedidos();
         }
 
-        private void GenerarReporteProductosMasVendidos()
+        private void GenerarReporteProductosMasPedidos()
         {
             try
             {
                 // Obtener fecha de inicio según el período seleccionado
                 DateTime fechaInicio = _reportesService.ObtenerFechaInicioPeriodo(cmbPeriodoProductos.SelectedIndex);
 
-                // Obtener productos más vendidos desde el servicio
-                var resultados = _reportesService.ObtenerProductosMasVendidos(fechaInicio);
+                // Obtener productos más pedidos desde el servicio
+                var resultados = _reportesService.ObtenerProductosMasPedidos(fechaInicio);
 
                 // Mostrar resultados en la tabla
-                dgProductosMasVendidos.ItemsSource = resultados;
+                dgProductosMasPedidos.ItemsSource = resultados;
 
                 // Actualizar gráficos
-                ActualizarGraficoProductosMasVendidos(resultados);
+                ActualizarGraficoProductosMasPedidos(resultados);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al generar reporte de productos más vendidos: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                dgProductosMasVendidos.ItemsSource = new List<object>();
-                ActualizarGraficoProductosMasVendidos(new List<ProductoVendidoDTO>());
+                MessageBox.Show($"Error al generar reporte de productos más pedidos: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                dgProductosMasPedidos.ItemsSource = new List<object>();
+                ActualizarGraficoProductosMasPedidos(new List<ProductoPedidoDTO>());
             }
         }
 
-        private void btnGenerarReporteVentas_Click(object sender, RoutedEventArgs e)
+        private void btnGenerarReportePosiblesGanancias_Click(object sender, RoutedEventArgs e)
         {
-            GenerarReporteVentasPorPeriodo();
+            GenerarReportePosiblesGananciasPorPeriodo();
         }
 
-        private void GenerarReporteVentasPorPeriodo()
+        private void GenerarReportePosiblesGananciasPorPeriodo()
         {
             try
             {
@@ -192,30 +192,30 @@ namespace GUI
                 DateTime fechaDesde = dpFechaDesde.SelectedDate ?? DateTime.Now.AddMonths(-1);
                 DateTime fechaHasta = dpFechaHasta.SelectedDate ?? DateTime.Now;
 
-                // Obtener ventas por período desde el servicio
-                var ventasPorFecha = _reportesService.ObtenerVentasPorPeriodo(fechaDesde, fechaHasta);
-                dgVentasPorPeriodo.ItemsSource = ventasPorFecha;
+                // Obtener posibles ganancias por período desde el servicio
+                var posiblesGananciasPorFecha = _reportesService.ObtenerPosiblesGananciasPorPeriodo(fechaDesde, fechaHasta);
+                dgPosiblesGananciasPorPeriodo.ItemsSource = posiblesGananciasPorFecha;
 
                 // Actualizar gráficos
-                ActualizarGraficoVentasPorPeriodo(ventasPorFecha);
+                ActualizarGraficoPosiblesGananciasPorPeriodo(posiblesGananciasPorFecha);
 
                 // Obtener y mostrar resumen
-                var resumen = _reportesService.ObtenerResumenVentas(fechaDesde, fechaHasta);
-                ActualizarResumenVentas(resumen.TotalVentas, resumen.TotalPedidos, resumen.PromedioPedido);
+                var resumen = _reportesService.ObtenerResumenPosiblesGanancias(fechaDesde, fechaHasta);
+                ActualizarResumenPosiblesGanancias(resumen.TotalPosiblesGanancias, resumen.TotalPedidos, resumen.PromedioPedido);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al generar reporte de ventas por período: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                dgVentasPorPeriodo.ItemsSource = new List<object>();
-                ActualizarGraficoVentasPorPeriodo(new List<VentaPorPeriodoDTO>());
-                ActualizarResumenVentas(0, 0, 0);
+                MessageBox.Show($"Error al generar reporte de posibles ganancias por período: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                dgPosiblesGananciasPorPeriodo.ItemsSource = new List<object>();
+                ActualizarGraficoPosiblesGananciasPorPeriodo(new List<PosibleGananciaPorPeriodoDTO>());
+                ActualizarResumenPosiblesGanancias(0, 0, 0);
             }
         }
 
-        private void ActualizarResumenVentas(decimal totalVentas, int totalPedidos, decimal promedioPedido)
+        private void ActualizarResumenPosiblesGanancias(decimal totalPosiblesGanancias, int totalPedidos, decimal promedioPedido)
         {
             // Actualizar tarjetas de resumen
-            txtTotalVentas.Text = string.Format("${0:N2}", totalVentas);
+            txtTotalPosiblesGanancias.Text = string.Format("${0:N2}", totalPosiblesGanancias);
             txtTotalPedidos.Text = totalPedidos.ToString();
             txtPromedioPedido.Text = string.Format("${0:N2}", promedioPedido);
         }
@@ -261,53 +261,52 @@ namespace GUI
             if (!_datosInicializados || cmbPeriodoCategorias.SelectedIndex < 0)
                 return;
 
-            GenerarReporteVentasPorCategoria();
+            GenerarReportePosiblesGananciasPorCategoria();
         }
 
         private void btnGenerarReporteCategorias_Click(object sender, RoutedEventArgs e)
         {
-            GenerarReporteVentasPorCategoria();
+            GenerarReportePosiblesGananciasPorCategoria();
         }
 
-        private void GenerarReporteVentasPorCategoria()
+        private void GenerarReportePosiblesGananciasPorCategoria()
         {
             try
             {
                 // Obtener fecha de inicio según el período seleccionado
                 DateTime fechaInicio = _reportesService.ObtenerFechaInicioPeriodo(cmbPeriodoCategorias.SelectedIndex);
 
-                // Obtener ventas por categoría desde el servicio
-                // Usamos el método más detallado para asegurar que tengamos datos completos
-                var resultadosDetallados = _reportesService.ObtenerVentasDetalladoPorCategoria(fechaInicio);
+                // Obtener posibles ganancias por categoría desde el servicio
+                var resultadosDetallados = _reportesService.ObtenerPosiblesGananciasDetalladoPorCategoria(fechaInicio);
 
                 // Convertir a formato para la tabla
-                var resultadosTabla = resultadosDetallados.Select(c => new VentaPorCategoriaDTO
+                var resultadosTabla = resultadosDetallados.Select(c => new PosibleGananciaPorCategoriaDTO
                 {
                     CategoriaId = c.Id,
                     Nombre = c.Nombre,
                     CantidadProductos = c.TotalProductos,
-                    CantidadVendida = c.TotalUnidadesVendidas,
-                    TotalVentas = c.TotalVentas
+                    CantidadPedida = c.TotalUnidadesPedidas,
+                    TotalPosiblesGanancias = c.TotalPosiblesGanancias
                 }).ToList();
 
-                dgVentasPorCategoria.ItemsSource = resultadosTabla;
+                dgPosiblesGananciasPorCategoria.ItemsSource = resultadosTabla;
 
                 // Actualizar gráficos con los datos detallados para asegurar consistencia
-                ActualizarGraficoVentasPorCategoria(resultadosTabla);
+                ActualizarGraficoPosiblesGananciasPorCategoria(resultadosTabla);
 
                 // Verificar si tenemos datos
                 if (!resultadosTabla.Any())
                 {
-                    MessageBox.Show("No se encontraron ventas por categoría en el período seleccionado.",
+                    MessageBox.Show("No se encontraron pedidos por categoría en el período seleccionado.",
                         "Sin datos", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al generar reporte de ventas por categoría: {ex.Message}",
+                MessageBox.Show($"Error al generar reporte de posibles ganancias por categoría: {ex.Message}",
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                dgVentasPorCategoria.ItemsSource = new List<object>();
-                ActualizarGraficoVentasPorCategoria(new List<VentaPorCategoriaDTO>());
+                dgPosiblesGananciasPorCategoria.ItemsSource = new List<object>();
+                ActualizarGraficoPosiblesGananciasPorCategoria(new List<PosibleGananciaPorCategoriaDTO>());
             }
         }
 
@@ -327,13 +326,13 @@ namespace GUI
         private void InicializarPropiedadesBinding()
         {
             // Inicializar colecciones para gráficos
-            ProductosVendidosSeries = new SeriesCollection();
-            ProductosVendidosLabels = new List<string>();
-            ProductosVendidosPieSeries = new SeriesCollection();
+            ProductosPedidosSeries = new SeriesCollection();
+            ProductosPedidosLabels = new List<string>();
+            ProductosPedidosPieSeries = new SeriesCollection();
 
-            VentasPorPeriodoSeries = new SeriesCollection();
-            VentasPorPeriodoLabels = new List<string>();
-            VentasPorPeriodoYFormatter = value => string.Format("${0:N0}", value);
+            PosiblesGananciasPorPeriodoSeries = new SeriesCollection();
+            PosiblesGananciasPorPeriodoLabels = new List<string>();
+            PosiblesGananciasPorPeriodoYFormatter = value => string.Format("${0:N0}", value);
 
             InventarioStockSeries = new SeriesCollection();
             InventarioStockLabels = new List<string>();
@@ -344,7 +343,7 @@ namespace GUI
             CategoriasYFormatter = value => string.Format("${0:N0}", value);
         }
 
-        private void ActualizarGraficoProductosMasVendidos(List<ProductoVendidoDTO> resultados)
+        private void ActualizarGraficoProductosMasPedidos(List<ProductoPedidoDTO> resultados)
         {
             try
             {
@@ -353,14 +352,14 @@ namespace GUI
                 {
                     // Estamos en otro hilo, ejecutar en el hilo de la UI
                     System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(() =>
-                        ActualizarGraficoProductosMasVendidos(resultados));
+                        ActualizarGraficoProductosMasPedidos(resultados));
                     return;
                 }
 
                 // Recrear las colecciones completamente para evitar problemas de binding
-                ProductosVendidosSeries = new SeriesCollection();
-                ProductosVendidosLabels = new List<string>();
-                ProductosVendidosPieSeries = new SeriesCollection();
+                ProductosPedidosSeries = new SeriesCollection();
+                ProductosPedidosLabels = new List<string>();
+                ProductosPedidosPieSeries = new SeriesCollection();
 
                 // Si no hay resultados, no actualizar gráficos
                 if (resultados == null || !resultados.Any())
@@ -370,28 +369,28 @@ namespace GUI
                 var topProductos = resultados.Take(5).ToList();
 
                 // Preparar datos para gráfico de barras
-                var valoresVentas = new ChartValues<double>();
+                var valoresPedidos = new ChartValues<double>();
                 foreach (var producto in topProductos)
                 {
-                    ProductosVendidosLabels.Add(producto.Nombre);
-                    valoresVentas.Add(producto.CantidadVendida);
+                    ProductosPedidosLabels.Add(producto.Nombre);
+                    valoresPedidos.Add(producto.CantidadPedida);
                 }
 
                 // Crear y agregar la serie
-                ProductosVendidosSeries.Add(new ColumnSeries
+                ProductosPedidosSeries.Add(new ColumnSeries
                 {
-                    Title = "Cantidad Vendida",
-                    Values = valoresVentas,
+                    Title = "Cantidad Pedida",
+                    Values = valoresPedidos,
                     Fill = new SolidColorBrush(Colors.DodgerBlue)
                 });
 
                 // Preparar datos para gráfico de pastel
                 foreach (var producto in topProductos)
                 {
-                    ProductosVendidosPieSeries.Add(new PieSeries
+                    ProductosPedidosPieSeries.Add(new PieSeries
                     {
                         Title = producto.Nombre,
-                        Values = new ChartValues<double> { (double)producto.TotalVentas },
+                        Values = new ChartValues<double> { (double)producto.TotalPosiblesGanancias },
                         DataLabels = true,
                         LabelPoint = point => string.Format("${0:N0}", point.Y)
                     });
@@ -402,41 +401,41 @@ namespace GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error en ActualizarGraficoProductosMasVendidos: {ex.Message}",
+                MessageBox.Show($"Error en ActualizarGraficoProductosMasPedidos: {ex.Message}",
                     "Error en gráfico", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 // Inicializar con colecciones vacías en caso de error
-                ProductosVendidosSeries = new SeriesCollection();
-                ProductosVendidosLabels = new List<string>();
-                ProductosVendidosPieSeries = new SeriesCollection();
+                ProductosPedidosSeries = new SeriesCollection();
+                ProductosPedidosLabels = new List<string>();
+                ProductosPedidosPieSeries = new SeriesCollection();
             }
         }
 
-        private void ActualizarGraficoVentasPorPeriodo(List<VentaPorPeriodoDTO> ventasPorFecha)
+        private void ActualizarGraficoPosiblesGananciasPorPeriodo(List<PosibleGananciaPorPeriodoDTO> posiblesGananciasPorFecha)
         {
             try
             {
                 // Limpiar series y etiquetas
-                VentasPorPeriodoSeries.Clear();
-                VentasPorPeriodoLabels.Clear();
+                PosiblesGananciasPorPeriodoSeries.Clear();
+                PosiblesGananciasPorPeriodoLabels.Clear();
 
                 // Si no hay resultados, no actualizar gráficos
-                if (ventasPorFecha == null || !ventasPorFecha.Any())
+                if (posiblesGananciasPorFecha == null || !posiblesGananciasPorFecha.Any())
                     return;
 
                 // Preparar datos para gráfico de línea
-                var valoresVentas = new ChartValues<double>();
+                var valoresPosiblesGanancias = new ChartValues<double>();
 
-                foreach (var venta in ventasPorFecha)
+                foreach (var posibleGanancia in posiblesGananciasPorFecha)
                 {
-                    VentasPorPeriodoLabels.Add(venta.Fecha.ToString("dd/MM"));
-                    valoresVentas.Add((double)venta.TotalVentas);
+                    PosiblesGananciasPorPeriodoLabels.Add(posibleGanancia.Fecha.ToString("dd/MM"));
+                    valoresPosiblesGanancias.Add((double)posibleGanancia.TotalPosiblesGanancias);
                 }
 
-                VentasPorPeriodoSeries.Add(new LineSeries
+                PosiblesGananciasPorPeriodoSeries.Add(new LineSeries
                 {
-                    Title = "Total Ventas",
-                    Values = valoresVentas,
+                    Title = "Posibles Ganancias",
+                    Values = valoresPosiblesGanancias,
                     PointGeometry = DefaultGeometries.Circle,
                     PointGeometrySize = 10,
                     LineSmoothness = 0,
@@ -449,7 +448,7 @@ namespace GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error en ActualizarGraficoVentasPorPeriodo: {ex.Message}",
+                MessageBox.Show($"Error en ActualizarGraficoPosiblesGananciasPorPeriodo: {ex.Message}",
                     "Error en gráfico", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -499,7 +498,7 @@ namespace GUI
             }
         }
 
-        private void ActualizarGraficoVentasPorCategoria(List<VentaPorCategoriaDTO> resultados)
+        private void ActualizarGraficoPosiblesGananciasPorCategoria(List<PosibleGananciaPorCategoriaDTO> resultados)
         {
             try
             {
@@ -533,7 +532,7 @@ namespace GUI
                     CategoriasPieSeries.Add(new PieSeries
                     {
                         Title = categoria.Nombre,
-                        Values = new ChartValues<double> { (double)categoria.TotalVentas },
+                        Values = new ChartValues<double> { (double)categoria.TotalPosiblesGanancias },
                         DataLabels = true,
                         LabelPoint = point => string.Format("{0}: ${1:N0}", categoria.Nombre, point.Y),
                         Fill = color
@@ -543,18 +542,18 @@ namespace GUI
                 }
 
                 // Preparar datos para gráfico de barras
-                var valoresVentas = new ChartValues<double>();
+                var valoresPosiblesGanancias = new ChartValues<double>();
 
                 foreach (var categoria in resultados)
                 {
                     CategoriasLabels.Add(categoria.Nombre);
-                    valoresVentas.Add((double)categoria.TotalVentas);
+                    valoresPosiblesGanancias.Add((double)categoria.TotalPosiblesGanancias);
                 }
 
                 CategoriasSeries.Add(new ColumnSeries
                 {
-                    Title = "Total Ventas",
-                    Values = valoresVentas,
+                    Title = "Posibles Ganancias",
+                    Values = valoresPosiblesGanancias,
                     DataLabels = true,
                     LabelPoint = point => string.Format("${0:N0}", point.Y),
                     Fill = new SolidColorBrush(Colors.DodgerBlue)
@@ -565,7 +564,7 @@ namespace GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error en ActualizarGraficoVentasPorCategoria: {ex.Message}",
+                MessageBox.Show($"Error en ActualizarGraficoPosiblesGananciasPorCategoria: {ex.Message}",
                     "Error en gráfico", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
