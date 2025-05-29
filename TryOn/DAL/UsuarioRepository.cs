@@ -190,11 +190,6 @@ namespace TryOn.DAL
             return usuario;
         }
 
-        public void Save()
-        {
-            // No es necesario implementar en este caso ya que cada método maneja su propia transacción
-        }
-
         public void Update(Usuario usuario)
         {
             try

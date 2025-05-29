@@ -20,6 +20,9 @@ namespace GUI
             _pedidoService = new PedidoService();
             _usuarioActual = usuario;
 
+            // Establecer el DataContext para que el binding funcione
+            this.DataContext = this;
+
             // Seleccionar "Todos" en combo de estados
             cmbEstado.SelectedIndex = 0;
 
@@ -96,7 +99,7 @@ namespace GUI
         {
             // Redirigir a la página de catálogo
             MainWindow mainWindow = (MainWindow)Window.GetWindow(this);
-            mainWindow.NavegarACatalogo(); // Usar el método público en lugar de btnCatalogo_Click
+            mainWindow.NavegarACatalogo();
         }
 
         private void btnActualizarPedidos_Click(object sender, RoutedEventArgs e)
@@ -137,6 +140,14 @@ namespace GUI
 
         private void btnCambiarEstado_Click(object sender, RoutedEventArgs e)
         {
+            // Verificar nuevamente que sea administrador por seguridad
+            if (!_usuarioActual.EsAdmin)
+            {
+                MessageBox.Show("No tienes permisos para cambiar el estado de pedidos.", "Acceso Denegado",
+                               MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             Button btn = (Button)sender;
             int pedidoId = (int)btn.Tag;
 

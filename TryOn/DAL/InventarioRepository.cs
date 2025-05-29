@@ -50,9 +50,13 @@ namespace TryOn.DAL
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = conexion;
-                    cmd.CommandText = "DELETE FROM inventario WHERE id = @id";
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = "SELECT eliminar_inventario_completo(@inventario_id)";
+                    cmd.Parameters.AddWithValue("@inventario_id", id);
+
+                    string resultado = cmd.ExecuteScalar()?.ToString();
+
+                    // Opcional: usar el resultado para mostrar información
+                    Console.WriteLine(resultado);
                 }
             }
             catch (Exception ex)
@@ -64,6 +68,7 @@ namespace TryOn.DAL
                 CerrarConexion();
             }
         }
+        
 
         public IEnumerable<Inventario> Find(Func<Inventario, bool> predicate)
         {
@@ -171,11 +176,6 @@ namespace TryOn.DAL
                 CerrarConexion();
             }
             return inventarios;
-        }
-
-        public void Save()
-        {
-            // No es necesario implementar en este caso ya que cada método maneja su propia transacción
         }
 
         public void Update(Inventario inventario)

@@ -7,11 +7,11 @@ using TryOn.DAL;
 
 namespace TryOn.BLL
 {
-    public class CategoryService : IService<Categoria>
+    public class CategoriaService : IService<Categoria>
     {
         private readonly CategoryRepository _categoryRepository;
 
-        public CategoryService()
+        public CategoriaService()
         {
             _categoryRepository = new CategoryRepository();
         }

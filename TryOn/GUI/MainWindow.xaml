@@ -1,12 +1,15 @@
 ﻿<Window x:Class="GUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="TryOn - Sistema de Gestión de Inventario" Height="700" Width="1200"
-        WindowStartupLocation="CenterScreen" 
+        Title="TryOn - Sistema de Gestión de Inventario" 
+        Height="1080" 
+        Width="1920"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
         Background="{StaticResource BackgroundBrush}">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="300"/> <!-- Aumentado de 250 a 300 -->
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -14,39 +17,39 @@
         <Border Grid.Column="0" Background="{StaticResource PrimaryBrush}">
             <DockPanel>
                 <!-- Encabezado del menú -->
-                <StackPanel DockPanel.Dock="Top" Margin="20,30,20,30">
-                    <Image Source="/Resources/logo.png" Stretch="Fill" Height="113" Width="110"/>
-                    <TextBlock x:Name="txtUsuarioNombre" Text="Bienvenido, Usuario" FontSize="14" Foreground="White" Opacity="0.8" Margin="0,5,0,0" Width="183"/>
+                <StackPanel DockPanel.Dock="Top" Margin="30,40,30,40"> <!-- Aumentado el margen -->
+                    <Image Source="/Resources/logo.png" Stretch="Fill" Height="140" Width="140"/> <!-- Logo más grande -->
+                    <TextBlock x:Name="txtUsuarioNombre" Text="Bienvenido, Usuario" FontSize="18" Foreground="White" Opacity="0.8" Margin="0,10,0,0"/> <!-- Texto más grande -->
                 </StackPanel>
 
                 <!-- Opciones del menú -->
-                <StackPanel DockPanel.Dock="Top" Margin="0,20,0,0">
+                <StackPanel DockPanel.Dock="Top" Margin="0,30,0,0"> <!-- Más espacio entre opciones -->
                     <!-- Solo visible para administradores -->
-                    <Button x:Name="btnInventario" Content="Gestión de Inventario" Margin="10,5" Background="Transparent" BorderThickness="0" 
-                            HorizontalContentAlignment="Left" Padding="15,10" Foreground="White" Click="btnInventario_Click"/>
+                    <Button x:Name="btnInventario" Content="Gestión de Inventario" Margin="15,8" Background="Transparent" BorderThickness="0" 
+                            HorizontalContentAlignment="Left" Padding="20,12" Foreground="White" Click="btnInventario_Click" FontSize="16"/> <!-- Botones más grandes -->
 
                     <!-- Visible para todos los usuarios -->
-                    <Button x:Name="btnCatalogo" Content="Catálogo de Productos" Margin="10,5" Background="Transparent" BorderThickness="0" 
-                            HorizontalContentAlignment="Left" Padding="15,10" Foreground="White" Click="btnCatalogo_Click"/>
+                    <Button x:Name="btnCatalogo" Content="Catálogo de Productos" Margin="15,8" Background="Transparent" BorderThickness="0" 
+                            HorizontalContentAlignment="Left" Padding="20,12" Foreground="White" Click="btnCatalogo_Click" FontSize="16"/>
 
                     <!-- Solo visible para administradores -->
-                    <Button x:Name="btnVentas" Content="Pedidos" Margin="10,5" Background="Transparent" BorderThickness="0" 
-                            HorizontalContentAlignment="Left" Padding="15,10" Foreground="White" Click="btnVentas_Click"/>
+                    <Button x:Name="btnVentas" Content="Pedidos" Margin="15,8" Background="Transparent" BorderThickness="0" 
+                            HorizontalContentAlignment="Left" Padding="20,12" Foreground="White" Click="btnVentas_Click" FontSize="16"/>
 
                     <!-- Solo visible para administradores -->
-                    <Button x:Name="btnReportes" Content="Reportes" Margin="10,5" Background="Transparent" BorderThickness="0" 
-                            HorizontalContentAlignment="Left" Padding="15,10" Foreground="White" Click="btnReportes_Click"/>
+                    <Button x:Name="btnReportes" Content="Reportes" Margin="15,8" Background="Transparent" BorderThickness="0" 
+                            HorizontalContentAlignment="Left" Padding="20,12" Foreground="White" Click="btnReportes_Click" FontSize="16"/>
 
                     <!-- Solo visible para administradores -->
-                    <Button x:Name="btnUsuarios" Content="Gestión de Usuarios" Margin="10,5" Background="Transparent" BorderThickness="0" 
-                            HorizontalContentAlignment="Left" Padding="15,10" Foreground="White" Click="btnUsuarios_Click"/>
+                    <Button x:Name="btnUsuarios" Content="Gestión de Usuarios" Margin="15,8" Background="Transparent" BorderThickness="0" 
+                            HorizontalContentAlignment="Left" Padding="20,12" Foreground="White" Click="btnUsuarios_Click" FontSize="16"/>
                 </StackPanel>
 
                 <!-- Pie del menú -->
-                <StackPanel DockPanel.Dock="Bottom" Margin="20,0,20,20">
-                    <Separator Background="#FFFFFF" Opacity="0.2" Margin="0,0,0,10"/>
+                <StackPanel DockPanel.Dock="Bottom" Margin="30,0,30,30"> <!-- Más espacio en el pie -->
+                    <Separator Background="#FFFFFF" Opacity="0.2" Margin="0,0,0,15"/>
                     <Button x:Name="btnCerrarSesion" Content="Cerrar Sesión" Background="Transparent" BorderThickness="0" 
-                            Foreground="White" HorizontalContentAlignment="Left" Click="btnCerrarSesion_Click"/>
+                            Foreground="White" HorizontalContentAlignment="Left" Click="btnCerrarSesion_Click" FontSize="16"/>
                 </StackPanel>
             </DockPanel>
         </Border>
@@ -59,15 +62,15 @@
             </Grid.RowDefinitions>
 
             <!-- Barra superior -->
-            <Border Grid.Row="0" Background="White" BorderBrush="#EEEEEE" BorderThickness="0,0,0,1" Padding="20,15">
+            <Border Grid.Row="0" Background="White" BorderBrush="#EEEEEE" BorderThickness="0,0,0,1" Padding="30,20"> <!-- Más padding -->
                 <Grid>
-                    <TextBlock x:Name="txtTituloPagina" Text="Panel Principal" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="txtTituloPagina" Text="Panel Principal" FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center"/> <!-- Título más grande -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"/>
                 </Grid>
             </Border>
 
             <!-- Área de contenido -->
-            <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden" Background="White" Margin="20"/>
+            <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden" Background="White" Margin="30"/> <!-- Más margen -->
         </Grid>
     </Grid>
 </Window>

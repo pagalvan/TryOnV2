@@ -11,7 +11,7 @@ namespace GUI
     public partial class PrendaDialog : Window
     {
         private readonly PrendaService _prendaService;
-        private readonly CategoryService _categoryService;
+        private readonly CategoriaService _categoryService;
         private Prenda _prenda;
         private bool _isEditing;
 
@@ -19,7 +19,7 @@ namespace GUI
         {
             InitializeComponent();
             _prendaService = new PrendaService();
-            _categoryService = new CategoryService();
+            _categoryService = new CategoriaService();
             _isEditing = false;
             txtTitulo.Text = "Agregar Prenda";
         }

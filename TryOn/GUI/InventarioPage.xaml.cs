@@ -12,7 +12,7 @@ namespace GUI
     {
         private readonly PrendaService _prendaService;
         private readonly InventarioService _inventarioService;
-        private readonly CategoryService _categoryService;
+        private readonly CategoriaService _categoryService;
         private List<Prenda> _prendas;
         private List<Inventario> _inventarios;
         private List<Categoria> _categorias;
@@ -22,7 +22,7 @@ namespace GUI
             InitializeComponent();
             _prendaService = new PrendaService();
             _inventarioService = new InventarioService();
-            _categoryService = new CategoryService();
+            _categoryService = new CategoriaService();
 
             CargarDatos();
         }
@@ -63,7 +63,7 @@ namespace GUI
             var categoriasCombo = new List<Categoria>();
             categoriasCombo.Add(new Categoria { Id = 0, Nombre = "Todas las categorías" });
             categoriasCombo.AddRange(_categorias);
-
+            
             cmbCategoria.ItemsSource = categoriasCombo;
             cmbCategoria.DisplayMemberPath = "Nombre";
             cmbCategoria.SelectedValuePath = "Id";
@@ -103,17 +103,27 @@ namespace GUI
             Button btn = (Button)sender;
             int prendaId = (int)btn.Tag;
 
-            if (MessageBox.Show("¿Está seguro de eliminar esta prenda?", "Confirmar eliminación",
-                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            var result = MessageBox.Show(
+                "¿Está seguro de eliminar esta prenda?\n\n" +
+                "Esto también eliminará todos los registros relacionados (inventario, detalles de pedidos, etc.)\n\n" +
+                "Esta acción no se puede deshacer.",
+                "Confirmar eliminación",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
             {
                 try
                 {
                     _prendaService.Delete(prendaId);
+                    MessageBox.Show("Prenda eliminada correctamente.", "Éxito",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                     CargarDatos();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error al eliminar prenda: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Error al eliminar prenda: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -148,20 +158,31 @@ namespace GUI
             Button btn = (Button)sender;
             int inventarioId = (int)btn.Tag;
 
-            if (MessageBox.Show("¿Está seguro de eliminar este registro de inventario?", "Confirmar eliminación",
-                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            var result = MessageBox.Show(
+                "¿Está seguro de eliminar este registro de inventario?\n\n" +
+                "Esto también eliminará los detalles de pedidos relacionados.\n\n" +
+                "Esta acción no se puede deshacer.",
+                "Confirmar eliminación",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
             {
                 try
                 {
                     _inventarioService.Delete(inventarioId);
+                    MessageBox.Show("Inventario eliminado correctamente.", "Éxito",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                     CargarDatos();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error al eliminar inventario: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Error al eliminar inventario: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
+
 
         private void btnAjustarStock_Click(object sender, RoutedEventArgs e)
         {

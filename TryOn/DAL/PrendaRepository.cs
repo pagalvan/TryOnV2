@@ -4,13 +4,73 @@ using Npgsql;
 using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 
 namespace TryOn.DAL
 {
     public class PrendaRepository : BaseDatos, IRepository<Prenda>
     {
+        public void Delete(int id)
+        {
+            try
+            {
+                AbrirConexion();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = conexion;
+                    cmd.CommandText = "SELECT eliminar_prenda_completa(@prenda_id)";
+                    cmd.Parameters.AddWithValue("@prenda_id", id);
+
+                    cmd.ExecuteScalar(); 
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al eliminar prenda: " + ex.Message);
+            }
+            finally
+            {
+                CerrarConexion();
+            }
+        }
+
+        public List<DependenciaEliminacion> VerificarDependencias(int id)
+        {
+            var dependencias = new List<DependenciaEliminacion>();
+            try
+            {
+                AbrirConexion();
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = conexion;
+                    cmd.CommandText = "SELECT * FROM verificar_eliminacion_prenda(@prenda_id)";
+                    cmd.Parameters.AddWithValue("@prenda_id", id);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            dependencias.Add(new DependenciaEliminacion
+                            {
+                                Tipo = reader["tipo_dependencia"].ToString(),
+                                Cantidad = Convert.ToInt32(reader["cantidad"]),
+                                Detalles = reader["detalles"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al verificar dependencias: " + ex.Message);
+            }
+            finally
+            {
+                CerrarConexion();
+            }
+            return dependencias;
+        }
+
         public void Add(Prenda prenda)
         {
             try
@@ -44,93 +104,44 @@ namespace TryOn.DAL
             }
         }
 
-        public void Delete(int id)
+        public void Update(Prenda prenda)
         {
             try
             {
                 AbrirConexion();
-
-                // Verificar si la prenda tiene promociones asociadas
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = conexion;
-                    cmd.CommandText = "SELECT COUNT(*) FROM promociones WHERE prenda_id = @id";
-                    cmd.Parameters.AddWithValue("@id", id);
-                    int promocionesCount = Convert.ToInt32(cmd.ExecuteScalar());
+                    cmd.CommandText = @"UPDATE prendas 
+                                        SET codigo = @codigo, 
+                                            nombre = @nombre, 
+                                            descripcion = @descripcion, 
+                                            precio_venta = @precio_venta, 
+                                            costo = @costo, 
+                                            categoria_id = @categoria_id, 
+                                            imagen_url = @imagen_url 
+                                        WHERE id = @id";
 
-                    if (promocionesCount > 0)
-                    {
-                        throw new Exception("No se puede eliminar la prenda porque tiene promociones asociadas. Elimine primero las promociones relacionadas.");
-                    }
-                }
+                    cmd.Parameters.AddWithValue("@id", prenda.Id);
+                    cmd.Parameters.AddWithValue("@codigo", prenda.Codigo);
+                    cmd.Parameters.AddWithValue("@nombre", prenda.Nombre);
+                    cmd.Parameters.AddWithValue("@descripcion", NpgsqlDbType.Text, (object)prenda.Descripcion ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@precio_venta", prenda.PrecioVenta);
+                    cmd.Parameters.AddWithValue("@costo", prenda.Costo);
+                    cmd.Parameters.AddWithValue("@categoria_id", prenda.CategoriaId);
+                    cmd.Parameters.AddWithValue("@imagen_url", NpgsqlDbType.Varchar, (object)prenda.ImagenUrl ?? DBNull.Value);
 
-                // Verificar si hay detalles de pedido que referencian al inventario de esta prenda
-                using (var cmd = new NpgsqlCommand())
-                {
-                    cmd.Connection = conexion;
-                    cmd.CommandText = @"
-                SELECT COUNT(*) 
-                FROM detalles_pedido dp
-                JOIN inventario i ON dp.inventario_id = i.id
-                WHERE i.prenda_id = @id";
-                    cmd.Parameters.AddWithValue("@id", id);
-                    int detallesCount = Convert.ToInt32(cmd.ExecuteScalar());
-
-                    if (detallesCount > 0)
-                    {
-                        throw new Exception("No se puede eliminar la prenda porque está asociada a pedidos existentes. Elimine primero los pedidos relacionados.");
-                    }
-                }
-
-                // Iniciar una transacción para asegurar que ambas operaciones se completen o ninguna
-                using (var transaction = conexion.BeginTransaction())
-                {
-                    try
-                    {
-                        // Primero eliminar los registros de inventario asociados
-                        using (var cmd = new NpgsqlCommand())
-                        {
-                            cmd.Connection = conexion;
-                            cmd.Transaction = transaction;
-                            cmd.CommandText = "DELETE FROM inventario WHERE prenda_id = @prenda_id";
-                            cmd.Parameters.AddWithValue("@prenda_id", id);
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        // Luego eliminar la prenda
-                        using (var cmd = new NpgsqlCommand())
-                        {
-                            cmd.Connection = conexion;
-                            cmd.Transaction = transaction;
-                            cmd.CommandText = "DELETE FROM prendas WHERE id = @id";
-                            cmd.Parameters.AddWithValue("@id", id);
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        // Confirmar la transacción
-                        transaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        // Revertir la transacción en caso de error
-                        transaction.Rollback();
-                        throw new Exception("Error en la transacción: " + ex.Message);
-                    }
+                    cmd.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al eliminar prenda: " + ex.Message);
+                throw new Exception("Error al actualizar prenda: " + ex.Message);
             }
             finally
             {
                 CerrarConexion();
             }
-        }
-
-        public IEnumerable<Prenda> Find(Func<Prenda, bool> predicate)
-        {
-            return GetAll().Where(predicate);
         }
 
         public IEnumerable<Prenda> GetAll()
@@ -201,49 +212,9 @@ namespace TryOn.DAL
             return prenda;
         }
 
-        public void Save()
+        public IEnumerable<Prenda> Find(Func<Prenda, bool> predicate)
         {
-            // No es necesario implementar en este caso ya que cada método maneja su propia transacción
-        }
-
-        public void Update(Prenda prenda)
-        {
-            try
-            {
-                AbrirConexion();
-                using (var cmd = new NpgsqlCommand())
-                {
-                    cmd.Connection = conexion;
-                    cmd.CommandText = @"UPDATE prendas 
-                                        SET codigo = @codigo, 
-                                            nombre = @nombre, 
-                                            descripcion = @descripcion, 
-                                            precio_venta = @precio_venta, 
-                                            costo = @costo, 
-                                            categoria_id = @categoria_id, 
-                                            imagen_url = @imagen_url 
-                                        WHERE id = @id";
-
-                    cmd.Parameters.AddWithValue("@id", prenda.Id);
-                    cmd.Parameters.AddWithValue("@codigo", prenda.Codigo);
-                    cmd.Parameters.AddWithValue("@nombre", prenda.Nombre);
-                    cmd.Parameters.AddWithValue("@descripcion", NpgsqlDbType.Text, (object)prenda.Descripcion ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@precio_venta", prenda.PrecioVenta);
-                    cmd.Parameters.AddWithValue("@costo", prenda.Costo);
-                    cmd.Parameters.AddWithValue("@categoria_id", prenda.CategoriaId);
-                    cmd.Parameters.AddWithValue("@imagen_url", NpgsqlDbType.Varchar, (object)prenda.ImagenUrl ?? DBNull.Value);
-
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al actualizar prenda: " + ex.Message);
-            }
-            finally
-            {
-                CerrarConexion();
-            }
+            return GetAll().Where(predicate);
         }
 
         private Prenda MapearPrenda(NpgsqlDataReader reader)
@@ -273,5 +244,13 @@ namespace TryOn.DAL
 
             return prenda;
         }
+    }
+
+    // Clase para manejar información de dependencias
+    public class DependenciaEliminacion
+    {
+        public string Tipo { get; set; }
+        public int Cantidad { get; set; }
+        public string Detalles { get; set; }
     }
 }

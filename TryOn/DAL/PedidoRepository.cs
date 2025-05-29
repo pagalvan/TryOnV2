@@ -266,10 +266,6 @@ namespace TryOn.DAL
             return detalles;
         }
 
-        public void Save()
-        {
-            // No es necesario implementar en este caso ya que cada método maneja su propia transacción
-        }
 
         public void Update(Pedido pedido)
         {

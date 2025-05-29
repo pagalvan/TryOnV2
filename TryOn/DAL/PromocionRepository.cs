@@ -181,10 +181,6 @@ namespace DAL
             return promociones;
         }
 
-        public void Save()
-        {
-            // No es necesario implementar en este caso ya que cada método maneja su propia transacción
-        }
 
         public void Update(Promocion promocion)
         {
