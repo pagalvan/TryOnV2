@@ -102,6 +102,79 @@ namespace GUI
             mainWindow.NavegarACatalogo();
         }
 
+        private void btnEliminarPedido_Click(object sender, RoutedEventArgs e)
+        {
+            // Verificar permisos de administrador
+            if (!_usuarioActual.EsAdmin)
+            {
+                MessageBox.Show("No tienes permisos para eliminar pedidos.", "Acceso Denegado",
+                               MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            Button btn = (Button)sender;
+            int pedidoId = (int)btn.Tag;
+
+            // Obtener el pedido para mostrar información en la confirmación
+            Pedido pedido = _pedidoService.GetById(pedidoId);
+            if (pedido == null)
+            {
+                MessageBox.Show("El pedido no fue encontrado.", "Error",
+                               MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // Mostrar diálogo de confirmación
+            string mensaje = $"¿Estás seguro de que deseas eliminar el pedido #{pedido.Id}?\n\n" +
+                            $"Cliente: {pedido.Usuario.NombreCompleto}\n" +
+                            $"Fecha: {pedido.FechaPedido:dd/MM/yyyy HH:mm}\n" +
+                            $"Total: ${pedido.Total:N2}\n\n" +
+                            "Esta acción no se puede deshacer.";
+
+            MessageBoxResult resultado = MessageBox.Show(mensaje, "Confirmar Eliminación",
+                                                        MessageBoxButton.YesNo,
+                                                        MessageBoxImage.Question,
+                                                        MessageBoxResult.No);
+
+            if (resultado == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    // Llamar al método Delete del servicio
+                    _pedidoService.Delete(pedidoId);
+
+                    // Mostrar mensaje de éxito
+                    MessageBox.Show("El pedido ha sido eliminado exitosamente.", "Eliminación Exitosa",
+                                   MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    // Recargar los datos para actualizar la vista
+                    CargarDatos();
+
+                    // Limpiar los detalles del pedido si el pedido eliminado estaba seleccionado
+                    if (dgPedidos.SelectedItem != null && ((Pedido)dgPedidos.SelectedItem).Id == pedidoId)
+                    {
+                        LimpiarDetallesPedido();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al eliminar el pedido: {ex.Message}", "Error",
+                                   MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void LimpiarDetallesPedido()
+        {
+            txtPedidoId.Text = "";
+            txtPedidoCliente.Text = "";
+            txtPedidoFecha.Text = "";
+            txtPedidoEstado.Text = "";
+            txtPedidoTotal.Text = "";
+            txtPedidoDireccion.Text = "";
+            dgDetallesPedido.ItemsSource = null;
+        }
+
         private void btnActualizarPedidos_Click(object sender, RoutedEventArgs e)
         {
             CargarDatos();

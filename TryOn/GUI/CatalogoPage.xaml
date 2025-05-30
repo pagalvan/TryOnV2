@@ -33,6 +33,46 @@
 
                 <TextBlock Text="Color:" VerticalAlignment="Center" Margin="0,0,10,0"/>
                 <ComboBox x:Name="cmbColor" Width="100" Margin="0,0,20,0" SelectionChanged="cmbColor_SelectionChanged"/>
+
+                <!-- Botón Limpiar Filtros -->
+                <Button x:Name="btnLimpiarFiltros" 
+                        Content="✕" 
+                        Width="30" 
+                        Height="30"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Background="#3333"
+                        Foreground="White"
+                        BorderThickness="0"
+                        ToolTip="Limpiar filtros"
+                        Margin="10,0,0,0"
+                        Click="btnLimpiarFiltros_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                CornerRadius="15"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                BorderBrush="{TemplateBinding BorderBrush}">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                            VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#C82333"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter Property="Background" Value="#BD2130"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </StackPanel>
 
             <!-- Carrito -->

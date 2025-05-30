@@ -68,6 +68,14 @@
                                                     Click="btnCambiarEstado_Click" 
                                                     Tag="{Binding Id}"
                                                     Visibility="{Binding DataContext.EsAdmin, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            <!-- Nuevo botón Eliminar - solo visible para administradores -->
+                                            <Button Content="Eliminar" 
+                                             Margin="0,0,5,0"
+                                             Click="btnEliminarPedido_Click" 
+                                             Tag="{Binding Id}"
+                                             Background="#333333"
+                                             Foreground="White"
+                                             Visibility="{Binding DataContext.EsAdmin, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

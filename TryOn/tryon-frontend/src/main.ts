@@ -21,7 +21,7 @@ const LENS_CONFIG = {
     Vestidos: {
       blanco: "45108ebf-72cb-4499-a115-f47dcbcbac26",
       negro: "015a1d10-6e76-4b81-aa84-7b5d40b8b6e9",
-      rojo: "015a1d10-6e76-4b81-aa84-7b5d40b8b6e9",
+      rojo: "e17861d4-a5f9-4652-8831-c6ea5dbf7980",
       default: "015a1d10-6e76-4b81-aa84-7b5d40b8b6e9",
     },
     Uniformes: {

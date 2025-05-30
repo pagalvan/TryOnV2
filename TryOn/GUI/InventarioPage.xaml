@@ -58,7 +58,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Inventario" Height="22" Margin="-2,-2,-2,0" VerticalAlignment="Top">
+            <TabItem Header="Inventario" Height="25" Margin="-2,0,-2,0" VerticalAlignment="Center">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

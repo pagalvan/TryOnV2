@@ -27,7 +27,7 @@
             </StackPanel>
 
             <Button Grid.Column="1" x:Name="btnEnviarPromocion" Content="Enviar Promoción por Telegram" 
-                    Margin="20,0,0,0" VerticalAlignment="Bottom" Click="btnEnviarPromocion_Click"/>
+                    Margin="10,32,10,0" VerticalAlignment="Top" Click="btnEnviarPromocion_Click" Height="31"/>
         </Grid>
 
         <!-- Contenido del reporte -->

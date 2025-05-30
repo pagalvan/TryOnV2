@@ -80,10 +80,46 @@ namespace GUI
                 var colores = _inventarios.Select(i => i.Color).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
                 cmbColor.ItemsSource = colores;
                 cmbColor.SelectedIndex = -1;
+
+                // Inicializar estado del botón limpiar filtros
+                ActualizarEstadoBotonLimpiar();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar combos: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ActualizarEstadoBotonLimpiar()
+        {
+            // Verificar si hay filtros activos
+            bool hayFiltrosActivos = cmbCategoria.SelectedIndex != -1 ||
+                                    cmbTalla.SelectedIndex != 0 ||
+                                    cmbColor.SelectedIndex != -1;
+
+            // Habilitar/deshabilitar el botón según si hay filtros activos
+            btnLimpiarFiltros.IsEnabled = hayFiltrosActivos;
+            btnLimpiarFiltros.Opacity = hayFiltrosActivos ? 1.0 : 0.5;
+        }
+
+        private void btnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Limpiar todos los filtros
+                cmbCategoria.SelectedIndex = -1;
+                cmbTalla.SelectedIndex = 0; // "Todas"
+                cmbColor.SelectedIndex = -1;
+
+                // Actualizar estado del botón
+                ActualizarEstadoBotonLimpiar();
+
+                // Mostrar todos los productos
+                MostrarProductos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al limpiar filtros: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -440,16 +476,19 @@ namespace GUI
         private void cmbCategoria_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             MostrarProductos();
+            ActualizarEstadoBotonLimpiar();
         }
 
         private void cmbTalla_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             MostrarProductos();
+            ActualizarEstadoBotonLimpiar();
         }
 
         private void cmbColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             MostrarProductos();
+            ActualizarEstadoBotonLimpiar();
         }
 
         // Método para recargar los datos y refrescar la interfaz
