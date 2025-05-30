@@ -1,0 +1,62 @@
+﻿<Window x:Class="GUI.UsuarioDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Usuario" Height="500" Width="500"
+        WindowStartupLocation="CenterScreen" 
+        Background="{StaticResource BackgroundBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Encabezado -->
+        <TextBlock Grid.Row="0" x:Name="txtTitulo" Text="Agregar Usuario" FontSize="20" FontWeight="SemiBold" Margin="20,20,20,10"/>
+
+        <!-- Formulario -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20,0,20,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                        <TextBlock Text="Nombre" Margin="0,0,0,5"/>
+                        <TextBox x:Name="txtNombre" Margin="0,0,0,15"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                        <TextBlock Text="Apellido" Margin="0,0,0,5"/>
+                        <TextBox x:Name="txtApellido" Margin="0,0,0,15"/>
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="Email" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtEmail" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Teléfono" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtTelefono" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Dirección" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtDireccion" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Contraseña" Margin="0,0,0,5"/>
+                <PasswordBox x:Name="txtPassword" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Confirmar Contraseña" Margin="0,0,0,5"/>
+                <PasswordBox x:Name="txtConfirmPassword" Margin="0,0,0,15"/>
+
+                <CheckBox x:Name="chkEsAdmin" Content="Es Administrador" Margin="0,0,0,15"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Botones -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,10,20,20">
+            <Button x:Name="btnCancelar" Content="Cancelar" Width="100" Margin="0,0,10,0" Click="btnCancelar_Click"/>
+            <Button x:Name="btnGuardar" Content="Guardar" Width="100" Click="btnGuardar_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

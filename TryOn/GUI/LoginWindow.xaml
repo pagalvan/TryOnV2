@@ -1,0 +1,81 @@
+﻿<Window x:Class="GUI.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TryOn - Iniciar Sesión" Height="500" Width="800"
+        WindowStartupLocation="CenterScreen" 
+        Background="White">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Panel izquierdo de color burdeos -->
+        <Rectangle Grid.Column="0" Fill="#6B1D1D"/>
+
+        <!-- Logo o imagen aquí si lo deseas -->
+      <Image Source="Resources/logo.png" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Height="262" Width="279"/>
+
+        <!-- Panel derecho con formulario de login -->
+        <Grid Grid.Column="1" Margin="40,20,40,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Título -->
+            <TextBlock Grid.Row="0" Text="Welcome back" 
+                       FontSize="28" FontWeight="SemiBold" 
+                       Margin="0,40,0,40" 
+                       HorizontalAlignment="Left"/>
+
+            <!-- Formulario -->
+            <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                <TextBlock Text="Email" Margin="0,0,0,10" FontSize="14"/>
+                <TextBox x:Name="txtEmail" Height="40" Padding="10,0" 
+                         VerticalContentAlignment="Center"
+                         BorderThickness="1" BorderBrush="#E0E0E0"
+                         Margin="0,0,0,20"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Password" Margin="0,0,0,10" FontSize="14"/>
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,0,10">
+                        <Hyperlink Foreground="#6B1D1D">Forgot your password?</Hyperlink>
+                    </TextBlock>
+                </Grid>
+
+                <PasswordBox x:Name="txtPassword" Height="40" Padding="10,0" 
+                             VerticalContentAlignment="Center"
+                             BorderThickness="1" BorderBrush="#E0E0E0"
+                             Margin="0,0,0,30"/>
+
+                <Button x:Name="btnLogin" Content="Login" 
+                        Height="45" 
+                        Background="#6B1D1D" Foreground="White"
+                        BorderThickness="0"
+                        FontSize="14" FontWeight="SemiBold"
+                        Click="btnLogin_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="22.5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+
+            <!-- Enlace de registro -->
+            <StackPanel Grid.Row="2" HorizontalAlignment="Center" Margin="0,0,0,20">
+                <TextBlock>
+                    <Run Text="Don't have an account? "/>
+                    <Hyperlink x:Name="lnkRegistrar" Foreground="#6B1D1D" Click="lnkRegistrar_Click">Sign up</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

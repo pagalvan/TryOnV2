@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TryOn - Probador Virtual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --tan: #D5BB93;
+            --coffee: #6F4D38;
+            --caput-mortuum: #632024;
+            --white: #ffffff;
+            --light-tan: #e9dccf;
+            --dark-coffee: #5a3d2a;
+            --light-caput: #8b3034;
+            --shadow: rgba(99, 32, 36, 0.15);
+            --shadow-light: rgba(213, 187, 147, 0.3);
+            --gradient-primary: linear-gradient(135deg, var(--caput-mortuum) 0%, var(--coffee) 50%, var(--tan) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--tan) 0%, var(--coffee) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--caput-mortuum) 0%, var(--light-caput) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--light-tan) 0%, var(--tan) 50%, rgba(99, 32, 36, 0.1) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Header mejorado */
+        header {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            border-image: var(--gradient-primary) 1;
+        }
+
+        .logo {
+            text-decoration: none;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-light {
+            height: 80px;
+            width: auto;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 8px var(--shadow));
+            opacity: 1;
+        }
+
+        .logo-dark {
+            height: 80px;
+            width: auto;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 8px var(--shadow));
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .logo:hover .logo-light,
+        .logo:hover .logo-dark {
+            transform: scale(1.05);
+            filter: drop-shadow(0 4px 12px var(--shadow));
+        }
+
+        /* Cuando el header tiene scroll, mostrar logo oscuro */
+        .header-scrolled .logo-light {
+            opacity: 0;
+        }
+
+        .header-scrolled .logo-dark {
+            opacity: 1;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .icon:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 8px 25px var(--shadow);
+            background: var(--gradient-primary);
+        }
+
+        .icon:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .search-icon i, .cart-icon i {
+            font-size: 18px;
+        }
+
+        /* Efectos de scroll para el header */
+        .header-scrolled {
+            background: rgba(99, 32, 36, 0.95) !important;
+            color: white;
+        }
+
+        /* Main container */
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 60px 40px;
+            box-shadow: 0 20px 50px var(--shadow);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            border: 2px solid transparent;
+            border-image: var(--gradient-primary) 1;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-primary);
+            opacity: 0.05;
+            z-index: -1;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px var(--shadow);
+        }
+
+        h1 {
+            color: var(--caput-mortuum);
+            margin-bottom: 20px;
+            font-size: 3.5em;
+            font-weight: 700;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 8px var(--shadow);
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--gradient-accent);
+            border-radius: 2px;
+        }
+
+        p {
+            color: var(--coffee);
+            margin-bottom: 40px;
+            font-size: 1.3em;
+            font-weight: 400;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: white;
+            border: 2px solid var(--caput-mortuum);
+        }
+
+        .btn-primary::before {
+            background: var(--gradient-primary);
+        }
+
+        .btn-secondary {
+            background: var(--gradient-secondary);
+            color: white;
+            border: 2px solid var(--coffee);
+        }
+
+        .btn-secondary::before {
+            background: var(--gradient-accent);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px var(--shadow);
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn i {
+            font-size: 1.1em;
+        }
+
+        /* Animaciones de entrada */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .container {
+            animation: fadeInScale 0.8s ease forwards;
+        }
+
+        h1 {
+            animation: fadeInUp 0.6s ease 0.2s forwards;
+            opacity: 0;
+        }
+
+        p {
+            animation: fadeInUp 0.6s ease 0.4s forwards;
+            opacity: 0;
+        }
+
+        .buttons {
+            animation: fadeInUp 0.6s ease 0.6s forwards;
+            opacity: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .logo-light,
+            .logo-dark {
+                height: 65px;
+            }
+
+            .container {
+                padding: 40px 30px;
+                margin: 20px;
+            }
+
+            h1 {
+                font-size: 2.8em;
+            }
+
+            p {
+                font-size: 1.1em;
+            }
+
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                padding: 16px 30px;
+                font-size: 1.1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2.2em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            .btn {
+                padding: 14px 25px;
+                font-size: 1em;
+            }
+        }
+
+        /* Efectos adicionales */
+        .container::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(213, 187, 147, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/TryOn_logoApp-Uc06Ac4D6jfoa9ktsrrK0Mc2HtbsTT.png" alt="TryOn Logo" class="logo-light">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/tryOn%20letras%20500x500-YVi3za4V9KW76yvWzkG5daMDwhrn0D.png" alt="TryOn Logo" class="logo-dark">
+        </a>
+        <div class="header-icons">
+            <div class="icon search-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="icon cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="container">
+            <h1>TryOn</h1>
+            <p>Bienvenido al probador virtual más avanzado</p>
+            <div class="buttons">
+                <a href="catalogo.html" class="btn btn-primary">
+                    <i class="fas fa-store"></i>
+                    Ver Catálogo
+                </a>
+                <a href="probador.html" class="btn btn-secondary">
+                    <i class="fas fa-magic"></i>
+                    Probador Virtual
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Efecto de scroll para el header
+        document.addEventListener('DOMContentLoaded', function () {
+            // Efecto de scroll para el header y cambio de logo
+            window.addEventListener('scroll', function () {
+                const header = document.querySelector('header');
+                const scrolled = window.pageYOffset;
+
+                if (scrolled > 100) {
+                    header.classList.add('header-scrolled');
+                    header.style.boxShadow = '0 8px 30px rgba(99, 32, 36, 0.3)';
+                } else {
+                    header.classList.remove('header-scrolled');
+                    header.style.boxShadow = '0 4px 20px rgba(99, 32, 36, 0.15)';
+                }
+            });
+
+            // Efectos adicionales para los botones
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.05)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Efecto de parallax sutil en el container
+            window.addEventListener('scroll', function() {
+                const container = document.querySelector('.container');
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * -0.5;
+                
+               container.style.transform = `translateY(${rate}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

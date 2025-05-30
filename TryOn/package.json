@@ -1,0 +1,19 @@
+{
+  "name": "tryon",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@snap/camera-kit": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/dom-webcodecs": "^0.1.15",
+    "@types/webxr": "^0.5.22"
+  }
+}

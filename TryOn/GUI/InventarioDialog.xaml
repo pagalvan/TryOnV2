@@ -1,0 +1,52 @@
+﻿<Window x:Class="GUI.InventarioDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Inventario" Height="475" Width="497"
+        WindowStartupLocation="CenterScreen" 
+        Background="{StaticResource BackgroundBrush}">
+    <Grid Margin="0,0,0,-6">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="27*"/>
+            <ColumnDefinition Width="98*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Encabezado -->
+        <TextBlock Grid.Row="0" x:Name="txtTitulo" Text="Agregar Inventario" FontSize="20" FontWeight="SemiBold" Margin="20,20,20,10" Grid.ColumnSpan="2"/>
+
+        <!-- Formulario -->
+        <StackPanel Grid.Row="1" Margin="20,0,20,0" Grid.ColumnSpan="2">
+            <TextBlock Text="Prenda" Margin="0,0,0,5"/>
+            <ComboBox x:Name="cmbPrenda" Margin="0,0,0,15"/>
+
+            <TextBlock Text="Talla" Margin="0,0,0,5"/>
+            <ComboBox x:Name="cmbTalla" Margin="0,0,0,15">
+                <ComboBoxItem Content="XS"/>
+                <ComboBoxItem Content="S"/>
+                <ComboBoxItem Content="M"/>
+                <ComboBoxItem Content="L"/>
+                <ComboBoxItem Content="XL"/>
+                <ComboBoxItem Content="XXL"/>
+            </ComboBox>
+
+            <TextBlock Text="Color" Margin="0,0,0,5"/>
+            <TextBox x:Name="txtColor" Margin="0,0,0,15"/>
+
+            <TextBlock Text="Cantidad" Margin="0,0,0,5"/>
+            <TextBox x:Name="txtCantidad" Margin="0,0,0,15"/>
+
+            <TextBlock Text="Ubicación" Margin="0,0,0,5"/>
+            <TextBox x:Name="txtUbicacion" Margin="0,0,0,15"/>
+        </StackPanel>
+
+        <!-- Botones -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,20,20" Grid.Column="1">
+            <Button x:Name="btnCancelar" Content="Cancelar" Width="100" Margin="0,0,10,0" Click="btnCancelar_Click"/>
+            <Button x:Name="btnGuardar" Content="Guardar" Width="100" Click="btnGuardar_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

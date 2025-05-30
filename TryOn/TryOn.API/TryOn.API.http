@@ -1,0 +1,6 @@
+@TryOn.API_HostAddress = http://localhost:5265
+
+GET {{TryOn.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

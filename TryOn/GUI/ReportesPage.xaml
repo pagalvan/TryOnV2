@@ -1,0 +1,362 @@
+﻿<Page x:Class="GUI.ReportesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      Title="Reportes">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Selector de reportes y botón de promociones -->
+        <Grid Grid.Row="0" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Seleccione un reporte:" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                <ComboBox x:Name="cmbTipoReporte" SelectionChanged="cmbTipoReporte_SelectionChanged">
+                    <ComboBoxItem Content="Productos más Pedidos"/>
+                    <ComboBoxItem Content="Posibles Ganancias por período"/>
+                    <ComboBoxItem Content="Inventario bajo stock"/>
+                    <ComboBoxItem Content="Posibles Ganancias por categoría"/>
+                </ComboBox>
+            </StackPanel>
+
+            <Button Grid.Column="1" x:Name="btnEnviarPromocion" Content="Enviar Promoción por Telegram" 
+                    Margin="10,32,10,0" VerticalAlignment="Top" Click="btnEnviarPromocion_Click" Height="31"/>
+        </Grid>
+
+        <!-- Contenido del reporte -->
+        <TabControl Grid.Row="1" x:Name="tabReportes">
+            <!-- Productos más pedidos -->
+            <TabItem Header="Productos más pedidos" Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Filtros -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,10">
+                        <TextBlock Text="Período:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="cmbPeriodoProductos" Width="150" Margin="0,0,20,0" SelectionChanged="cmbPeriodoProductos_SelectionChanged">
+                            <ComboBoxItem Content="Último mes"/>
+                            <ComboBoxItem Content="Últimos 3 meses"/>
+                            <ComboBoxItem Content="Último año"/>
+                            <ComboBoxItem Content="Todo el tiempo"/>
+                        </ComboBox>
+
+                        <Button Content="Generar Reporte" Click="btnGenerarReporteProductos_Click"/>
+                    </StackPanel>
+
+                    <!-- Dashboard y DataGrid -->
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="300"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Dashboard de productos más pedidos -->
+                        <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="1" Margin="0,0,0,10" Background="#F9F9F9">
+                            <Grid Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Gráfico de barras para productos más pedidos -->
+                                <lvc:CartesianChart Grid.Column="0" Series="{Binding ProductosPedidosSeries}" LegendLocation="Right">
+                                    <lvc:CartesianChart.AxisX>
+                                        <lvc:Axis Title="Productos" Labels="{Binding ProductosPedidosLabels}" />
+                                    </lvc:CartesianChart.AxisX>
+                                    <lvc:CartesianChart.AxisY>
+                                        <lvc:Axis Title="Cantidad Pedida" />
+                                    </lvc:CartesianChart.AxisY>
+                                </lvc:CartesianChart>
+
+                                <!-- Gráfico de pastel para distribución de posibles ganancias -->
+                                <lvc:PieChart Grid.Column="1" Series="{Binding ProductosPedidosPieSeries}" LegendLocation="Bottom" InnerRadius="0" Margin="0,0,20,0">
+                                    <lvc:PieChart.ChartLegend>
+                                        <lvc:DefaultLegend BulletSize="15" />
+                                    </lvc:PieChart.ChartLegend>
+                                </lvc:PieChart>
+                            </Grid>
+                        </Border>
+
+                        <!-- DataGrid de productos más pedidos -->
+                        <DataGrid x:Name="dgProductosMasPedidos" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Producto" Binding="{Binding Nombre}" Width="200"/>
+                                <DataGridTextColumn Header="Categoría" Binding="{Binding Categoria}" Width="150"/>
+                                <DataGridTextColumn Header="Cantidad Pedida" Binding="{Binding CantidadPedida}" Width="120"/>
+                                <DataGridTextColumn Header="Posibles Ganancias" Binding="{Binding TotalPosiblesGanancias, StringFormat=C}" Width="150"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- Posibles ganancias por período -->
+            <TabItem Header="Posibles ganancias por período" Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Filtros -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,10">
+                        <TextBlock Text="Desde:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <DatePicker x:Name="dpFechaDesde" Width="120" Margin="0,0,20,0"/>
+
+                        <TextBlock Text="Hasta:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <DatePicker x:Name="dpFechaHasta" Width="120" Margin="0,0,20,0"/>
+
+                        <Button Content="Generar Reporte" Click="btnGenerarReportePosiblesGanancias_Click"/>
+                    </StackPanel>
+
+                    <!-- Dashboard y DataGrid -->
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="300"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Dashboard de posibles ganancias por período -->
+                        <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="1" Margin="0,0,0,10" Background="#F9F9F9">
+                            <Grid Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Gráfico de línea para tendencia de posibles ganancias -->
+                                <lvc:CartesianChart Grid.Column="0" Series="{Binding PosiblesGananciasPorPeriodoSeries}" LegendLocation="Right">
+                                    <lvc:CartesianChart.AxisX>
+                                        <lvc:Axis Title="Fecha" Labels="{Binding PosiblesGananciasPorPeriodoLabels}" />
+                                    </lvc:CartesianChart.AxisX>
+                                    <lvc:CartesianChart.AxisY>
+                                        <lvc:Axis Title="Posibles Ganancias" LabelFormatter="{Binding PosiblesGananciasPorPeriodoYFormatter}" />
+                                    </lvc:CartesianChart.AxisY>
+                                </lvc:CartesianChart>
+
+                                <!-- Tarjetas de resumen -->
+                                <Grid Grid.Column="1" Margin="10,0,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Total de posibles ganancias -->
+                                    <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="1" Margin="0,0,0,5" CornerRadius="5" Background="#FFFFFF">
+                                        <StackPanel Margin="10">
+                                            <TextBlock Text="Posibles Ganancias Totales" FontWeight="SemiBold" Foreground="#555555"/>
+                                            <TextBlock x:Name="txtTotalPosiblesGanancias" Text="$0.00" FontSize="24" FontWeight="Bold" Foreground="#2E7D32"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Total de pedidos -->
+                                    <Border Grid.Row="1" BorderBrush="#DDDDDD" BorderThickness="1" Margin="0,5,0,5" CornerRadius="5" Background="#FFFFFF">
+                                        <StackPanel Margin="10">
+                                            <TextBlock Text="Total de Pedidos" FontWeight="SemiBold" Foreground="#555555"/>
+                                            <TextBlock x:Name="txtTotalPedidos" Text="0" FontSize="24" FontWeight="Bold" Foreground="#1976D2"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Promedio por pedido -->
+                                    <Border Grid.Row="2" BorderBrush="#DDDDDD" BorderThickness="1" Margin="0,5,0,0" CornerRadius="5" Background="#FFFFFF">
+                                        <StackPanel Margin="10">
+                                            <TextBlock Text="Promedio por Pedido" FontWeight="SemiBold" Foreground="#555555"/>
+                                            <TextBlock x:Name="txtPromedioPedido" Text="$0.00" FontSize="24" FontWeight="Bold" Foreground="#F57C00"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- DataGrid de posibles ganancias por período -->
+                        <DataGrid x:Name="dgPosiblesGananciasPorPeriodo" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="100"/>
+                                <DataGridTextColumn Header="Cantidad de Pedidos" Binding="{Binding CantidadPedidos}" Width="150"/>
+                                <DataGridTextColumn Header="Posibles Ganancias" Binding="{Binding TotalPosiblesGanancias, StringFormat=C}" Width="150"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- Inventario bajo stock -->
+            <TabItem Header="Inventario bajo stock" Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Filtros -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,10">
+                        <TextBlock Text="Stock mínimo:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBox x:Name="txtStockMinimo" Width="80" Margin="0,0,20,0" Text="10"/>
+
+                        <Button Content="Generar Reporte" Click="btnGenerarReporteStock_Click"/>
+                    </StackPanel>
+
+                    <!-- Dashboard y DataGrid -->
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="300"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Dashboard de inventario bajo stock -->
+                        <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="1" Margin="0,0,0,10" Background="#F9F9F9">
+                            <Grid Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Gráfico de barras horizontales para inventario bajo stock -->
+                                <lvc:CartesianChart Grid.Column="0" Series="{Binding InventarioStockSeries}" LegendLocation="Right">
+                                    <lvc:CartesianChart.AxisY>
+                                        <lvc:Axis Title="Producto" Labels="{Binding InventarioStockLabels}" />
+                                    </lvc:CartesianChart.AxisY>
+                                    <lvc:CartesianChart.AxisX>
+                                        <lvc:Axis Title="Cantidad en Stock" />
+                                    </lvc:CartesianChart.AxisX>
+                                </lvc:CartesianChart>
+
+                                <!-- Indicadores de estado de inventario -->
+                                <Grid Grid.Column="1" Margin="10,0,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Text="Estado del Inventario" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+
+                                    <Grid Grid.Row="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Productos sin stock -->
+                                        <Border Grid.Row="0" BorderBrush="#FFCDD2" BorderThickness="1" Margin="0,0,0,10" CornerRadius="5" Background="#FFEBEE">
+                                            <StackPanel Margin="10">
+                                                <TextBlock Text="Productos sin stock" FontWeight="SemiBold" Foreground="#D32F2F"/>
+                                                <TextBlock x:Name="txtProductosSinStock" Text="0" FontSize="24" FontWeight="Bold" Foreground="#D32F2F"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Productos con stock crítico -->
+                                        <Border Grid.Row="1" BorderBrush="#FFE0B2" BorderThickness="1" Margin="0,0,0,10" CornerRadius="5" Background="#FFF3E0">
+                                            <StackPanel Margin="10">
+                                                <TextBlock Text="Productos con stock crítico" FontWeight="SemiBold" Foreground="#F57C00"/>
+                                                <TextBlock x:Name="txtProductosStockCritico" Text="0" FontSize="24" FontWeight="Bold" Foreground="#F57C00"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Productos con stock bajo -->
+                                        <Border Grid.Row="2" BorderBrush="#DCEDC8" BorderThickness="1" Margin="0,0,0,0" CornerRadius="5" Background="#F1F8E9">
+                                            <StackPanel Margin="10">
+                                                <TextBlock Text="Productos con stock bajo" FontWeight="SemiBold" Foreground="#689F38"/>
+                                                <TextBlock x:Name="txtProductosStockBajo" Text="0" FontSize="24" FontWeight="Bold" Foreground="#689F38"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- DataGrid de inventario bajo stock -->
+                        <DataGrid x:Name="dgInventarioBajoStock" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Producto" Binding="{Binding Prenda.Nombre}" Width="200"/>
+                                <DataGridTextColumn Header="Talla" Binding="{Binding Talla}" Width="80"/>
+                                <DataGridTextColumn Header="Color" Binding="{Binding Color}" Width="100"/>
+                                <DataGridTextColumn Header="Stock Actual" Binding="{Binding Cantidad}" Width="100"/>
+                                <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="150"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- Posibles ganancias por categoría -->
+            <TabItem Header="Posibles ganancias por categoría" Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Filtros -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,10,0,10">
+                        <TextBlock Text="Período:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="cmbPeriodoCategorias" Width="150" Margin="0,0,20,0" SelectionChanged="cmbPeriodoCategorias_SelectionChanged">
+                            <ComboBoxItem Content="Último mes"/>
+                            <ComboBoxItem Content="Últimos 3 meses"/>
+                            <ComboBoxItem Content="Último año"/>
+                            <ComboBoxItem Content="Todo el tiempo"/>
+                        </ComboBox>
+
+                        <Button Content="Generar Reporte" Click="btnGenerarReporteCategorias_Click"/>
+                    </StackPanel>
+
+                    <!-- Dashboard y DataGrid -->
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="300"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Dashboard de posibles ganancias por categoría -->
+                        <Border Grid.Row="0" BorderBrush="#DDDDDD" BorderThickness="1" Margin="0,0,0,10" Background="#F9F9F9">
+                            <Grid Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Gráfico de pastel para distribución de posibles ganancias por categoría -->
+                                <lvc:PieChart Grid.Column="0" Series="{Binding CategoriasPieSeries}" LegendLocation="Right" InnerRadius="0" Margin="0,0,10,0">
+                                    <lvc:PieChart.ChartLegend>
+                                        <lvc:DefaultLegend BulletSize="15" />
+                                    </lvc:PieChart.ChartLegend>
+                                </lvc:PieChart>
+
+                                <!-- Gráfico de barras para comparación de categorías -->
+                                <lvc:CartesianChart Grid.Column="1" Series="{Binding CategoriasSeries}" LegendLocation="Right" Margin="10,0,0,0">
+                                    <lvc:CartesianChart.AxisX>
+                                        <lvc:Axis Title="Categoría" Labels="{Binding CategoriasLabels}" />
+                                    </lvc:CartesianChart.AxisX>
+                                    <lvc:CartesianChart.AxisY>
+                                        <lvc:Axis Title="Posibles Ganancias" LabelFormatter="{Binding CategoriasYFormatter}" />
+                                    </lvc:CartesianChart.AxisY>
+                                </lvc:CartesianChart>
+                            </Grid>
+                        </Border>
+
+                        <!-- DataGrid de posibles ganancias por categoría -->
+                        <DataGrid x:Name="dgPosiblesGananciasPorCategoria" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Categoría" Binding="{Binding Nombre}" Width="200"/>
+                                <DataGridTextColumn Header="Cantidad de Productos" Binding="{Binding CantidadProductos}" Width="150"/>
+                                <DataGridTextColumn Header="Cantidad Pedida" Binding="{Binding CantidadPedida}" Width="120"/>
+                                <DataGridTextColumn Header="Posibles Ganancias" Binding="{Binding TotalPosiblesGanancias, StringFormat=C}" Width="150"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

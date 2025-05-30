@@ -1,0 +1,26 @@
+﻿<Window x:Class="GUI.CategorySuggestionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Seleccionar Categoría" Height="350" Width="300"
+        WindowStartupLocation="CenterOwner" 
+        Background="{StaticResource BackgroundBrush}">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Seleccione una categoría:" Margin="0,0,0,10"/>
+
+        <ListBox Grid.Row="1" x:Name="lstCategorias" Margin="0,0,0,10" 
+                 MouseDoubleClick="lstCategorias_MouseDoubleClick"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="btnCancelar" Content="Cancelar" Width="80" Margin="0,0,10,0" 
+                    Click="btnCancelar_Click"/>
+            <Button x:Name="btnSeleccionar" Content="Seleccionar" Width="80" 
+                    Click="btnSeleccionar_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
